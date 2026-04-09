@@ -154,6 +154,14 @@ def generate_mfcc_plot(audio, sr):
 def home():
     return render_template('index.html')
 
+@app.route('/upload')
+def upload():
+    return render_template('upload.html')
+
+@app.route('/doctors')
+def doctors():
+    return render_template('doctors.html')
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({
@@ -412,4 +420,5 @@ if __name__ == '__main__':
     print("   - Probability breakdown for Stage 2")
     print("=" * 60)
 
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)

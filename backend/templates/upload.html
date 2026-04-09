@@ -640,7 +640,7 @@
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">
+      <a class="navbar-brand fw-bold" href="index">
         <span class="brand-icon">🩺</span>
         <span class="brand-text">AUSCURA</span>
       </a>
@@ -649,12 +649,12 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="index.html#diseases">Diseases</a></li>
-          <li class="nav-item"><a class="nav-link active" href="upload.html">Analyze</a></li>
-          <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" href="doctors.html">Consult a Doctor</a></li>
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="/#diseases">Diseases</a></li>
+          <li class="nav-item"><a class="nav-link" href="/upload">Analyze</a></li>
+          <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/doctors">Consult a Doctor</a></li>
         </ul>
       </div>
     </div>
@@ -702,7 +702,7 @@
               <!-- ANTERIOR VIEW -->
               <div id="view-anterior" class="view-container active">
                 <div class="image-container">
-                  <img src="static/images/anterior-view.png" alt="Anterior Lung Auscultation Points" class="medical-image">
+                  <img src="{{ url_for('static', filename='images/anterior-view.png') }}" alt="Anterior Lung Auscultation Points" class="medical-image">
                   <div class="points-overlay">
                     <div class="point-marker" data-location="1" data-view="anterior" style="top: 46%; left: 43%;">1</div>
                     <div class="point-marker" data-location="2" data-view="anterior" style="top: 56%; left: 37%;">2</div>
@@ -716,7 +716,7 @@
               <!-- LATERAL VIEW -->
               <div id="view-lateral" class="view-container">
                 <div class="image-container">
-                  <img src="static/images/lateral-view.png" alt="Lateral Lung Auscultation Points" class="medical-image">
+                  <img src="{{ url_for('static', filename='images/lateral-view.png') }}" alt="Lateral Lung Auscultation Points" class="medical-image">
                   <div class="points-overlay">
                     <div class="point-marker" data-location="6" data-view="lateral" style="top: 48%; left: 46%;">6</div>
                     <div class="point-marker" data-location="7" data-view="lateral" style="top: 66%; left: 59%;">7</div>
@@ -727,7 +727,7 @@
               <!-- POSTERIOR VIEW -->
               <div id="view-posterior" class="view-container">
                 <div class="image-container">
-                  <img src="static/images/posterior-view.png" alt="Posterior Lung Auscultation Points" class="medical-image">
+                  <img src="{{ url_for('static', filename='images/posterior-view.png') }}" alt="Posterior Lung Auscultation Points" class="medical-image">
                   <div class="points-overlay">
                     <div class="point-marker" data-location="8" data-view="posterior" style="top: 47%; left: 44%;">8</div>
                     <div class="point-marker" data-location="9" data-view="posterior" style="top: 47%; left: 59%;">9</div>

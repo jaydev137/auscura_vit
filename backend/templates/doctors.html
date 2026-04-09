@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
-  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <style>
     /* ========== Original variables & base styles ========== */
     :root {
@@ -1699,7 +1699,7 @@ body::before {
   <!-- Main Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">
+      <a class="navbar-brand fw-bold" href="index">
         <span class="brand-icon">🩺</span>
         <span class="brand-text">AUSCURA</span>
       </a>
@@ -1708,12 +1708,12 @@ body::before {
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="index.html#diseases">Diseases</a></li>
-          <li class="nav-item"><a class="nav-link" href="upload.html">Analyze</a></li>
-          <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
-          <li class="nav-item"><a class="nav-link active" href="doctors.html">Consult a Doctor</a></li>
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="/#diseases">Diseases</a></li>
+          <li class="nav-item"><a class="nav-link" href="/upload">Analyze</a></li>
+          <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/doctors">Consult a Doctor</a></li>
         </ul>
       </div>
     </div>
@@ -3290,7 +3290,7 @@ body::before {
     currentUser = null;
     userType = null;
     clearSession();
-    window.location.href = 'index.html';
+    window.location.href = 'index';
   };
 
   // ===========================================
