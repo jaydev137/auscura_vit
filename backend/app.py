@@ -220,15 +220,23 @@ def predict_multiple():
             file.save(temp_path)
             
             try:
-                print(f"\n  📄 File {idx+1}: {file.filename}")
-                
-                # Load audio for visualizations
-                audio, sr = librosa.load(temp_path, sr=16000, duration=5.0)
-                
-                # Extract features
-                features = ap.extract_features_from_file(temp_path)
-                if features is None:
-                    raise ValueError("Feature extraction failed")
+                print(f"\n📄 File {idx+1}: {file.filename}")
+
+    # Load audio safely
+                try:
+                    audio, sr = librosa.load(temp_path, sr=16000, duration=5.0)
+                except Exception as e:
+                    print("🔥 LIBROSA ERROR:", e)
+                    raise ValueError("Audio loading failed")
+
+    # Extract features safely
+                try:
+                    features = ap.extract_features_from_file(temp_path)
+                    if features is None:
+                        raise ValueError("Feature extraction returned None")
+                except Exception as e:
+                    print("🔥 FEATURE ERROR:", e)
+                    raise ValueError(f"Feature extraction failed: {e}")
                 
                 # STAGE 1: Check if COPD or Non-COPD
                 if rf_scaler is not None:
