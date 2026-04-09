@@ -224,7 +224,8 @@ def predict_multiple():
 
     # Load audio safely
                 try:
-                    audio, sr = librosa.load(temp_path, sr=16000, duration=5.0)
+                    audio, sr = librosa.load(temp_path, sr=16000, duration=3.0)
+                    audio = audio[:48000]  # hard cap (~3 sec)
                 except Exception as e:
                     print("🔥 LIBROSA ERROR:", e)
                     raise ValueError("Audio loading failed")
@@ -309,11 +310,12 @@ def predict_multiple():
                 if user_type == 'doctor':
                     print(f"    📊 Generating visualizations for doctor mode...")
                     try:
-                        prediction_data["visualizations"] = {
+                        prediction_data["visualizations"] = None 
+                        """{
                             "waveform": generate_waveform_plot(audio, sr),
                             "spectrogram": generate_spectrogram(audio, sr),
                             "mfcc": generate_mfcc_plot(audio, sr)
-                        }
+                        }"""
                         prediction_data["audio_info"] = {
                             "duration": round(len(audio)/sr, 2),
                             "sample_rate": sr,
