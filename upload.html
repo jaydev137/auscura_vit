@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auscura | Respiratory Sound Scanner</title>
+
+  <!-- Fonts + Bootstrap -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Righteous&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+  <style>
+    /* ============================================================
+       CLAYMORPHISM ENHANCEMENTS
+       ============================================================ */
+    
+    :root {
+      --primary: #2c5aa0;
+      --primary-dark: #1e3d72;
+      --secondary: #4fc3f7;
+      --accent: #00bcd4;
+      --success: #4caf50;
+      --danger: #f44336;
+      --warning: #ff9800;
+      --dark: #263238;
+      --light: #f8fafc;
+      --clay-light: #f4f9ff;
+      --clay-shadow-out: 8px 8px 20px 0 #b0c4de, inset -6px -6px 14px 0 #b8cce4, inset 6px 6px 14px 0 #ffffff;
+      --clay-shadow-sm: 5px 5px 12px 0 #b0c4de, inset -4px -4px 10px 0 #b8cce4, inset 4px 4px 10px 0 #ffffff;
+      --clay-shadow-primary: 5px 5px 14px 0 #7a9fc8, inset -5px -5px 12px 0 #1a3870, inset 5px 5px 12px 0 #60a0e0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #eaf3ff 0%, #ddeeff 50%, #e8f7f0 100%);
+      padding-top: 70px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* View Container Display Fix */
+    .view-container {
+      display: none !important;
+    }
+    .view-container.active {
+      display: block !important;
+    }
+
+    /* Animated background particles */
+    .bg-particle {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      opacity: 0.3;
+      pointer-events: none;
+      animation: floatParticleSimple 12s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes floatParticleSimple {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-100px) scale(1); opacity: 0; }
+    }
+
+    /* Floating medical icons */
+    .medical-float-icon {
+      position: fixed;
+      font-size: 20px;
+      opacity: 0.03;
+      pointer-events: none;
+      animation: floatIconSlow 30s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes floatIconSlow {
+      0% { transform: translateY(100vh) rotate(0deg); }
+      100% { transform: translateY(-100px) rotate(360deg); }
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(234, 243, 255, 0.97) !important;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 4px 18px rgba(100, 140, 200, 0.18), inset 0 -2px 6px rgba(255, 255, 255, 0.7) !important;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.75);
+    }
+    .navbar-brand {
+      font-family: 'Righteous', cursive;
+      font-size: 1.8rem !important;
+      background: linear-gradient(135deg, #2c5aa0, #00bcd4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .navbar-nav .nav-link {
+      border-radius: 30px;
+      padding: 6px 18px !important;
+      font-weight: 500;
+      transition: all 0.25s ease;
+    }
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      background: linear-gradient(135deg, #2c5aa0, #00bcd4);
+      color: white !important;
+      box-shadow: var(--clay-shadow-primary);
+      transform: translateY(-2px);
+    }
+
+    /* Hero auth buttons */
+    .hero-auth-buttons {
+      position: absolute;
+      top: 100px;
+      right: 30px;
+      z-index: 100;
+      display: flex;
+      gap: 12px;
+    }
+    .hero-btn-login {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      color: var(--primary);
+      padding: 8px 28px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .hero-btn-login:hover {
+      background: white;
+      color: var(--primary);
+      border-color: white;
+      transform: translateY(-2px);
+    }
+    .hero-btn-register {
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8));
+      border: none;
+      color: var(--primary);
+      padding: 8px 28px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+    .hero-btn-register:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .hero-user-info {
+      position: absolute;
+      top: 100px;
+      right: 30px;
+      z-index: 100;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 8px 20px;
+      border-radius: 50px;
+    }
+    .hero-user-greeting {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .hero-logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: var(--primary);
+      padding: 5px 20px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .hero-logout-btn:hover {
+      background: #f44336;
+      border-color: #f44336;
+      color: white;
+      transform: translateY(-2px);
+    }
+    @media (max-width: 768px) {
+      .hero-auth-buttons, .hero-user-info {
+        top: 15px;
+        right: 15px;
+      }
+      .hero-btn-login, .hero-btn-register {
+        padding: 5px 18px;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Scanner Section */
+    .scanner-section {
+      padding: 30px 0 60px;
+      min-height: 100vh;
+    }
+
+    /* Scanner Container */
+    .scanner-container {
+      background: var(--clay-light);
+      border-radius: 28px;
+      box-shadow: var(--clay-shadow-out);
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+    .scanner-container:hover {
+      box-shadow: 12px 12px 28px 0 #9ab5d4, inset -8px -8px 18px 0 #b0c8e8, inset 8px 8px 18px 0 #ffffff;
+    }
+
+    /* Section Header */
+    .section-header h2 {
+      font-family: 'Righteous', cursive;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-subtitle {
+      color: var(--primary);
+      opacity: 0.8;
+    }
+
+    /* View Navigation */
+    .view-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .view-btn {
+      background: var(--clay-light);
+      border: none;
+      border-radius: 30px;
+      padding: 10px 24px;
+      font-weight: 600;
+      color: var(--primary);
+      box-shadow: var(--clay-shadow-sm);
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      cursor: pointer;
+    }
+    .view-btn:hover,
+    .view-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: var(--clay-shadow-primary);
+      transform: translateY(-2px) scale(1.02);
+    }
+    .point-count {
+      background: rgba(44, 90, 160, 0.15);
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      margin-left: 6px;
+    }
+    .view-btn.active .point-count {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Image Container */
+    .image-container {
+      position: relative;
+      width: fit-content;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--clay-shadow-out);
+      background: var(--clay-light);
+    }
+    .medical-image {
+      display: block;
+      width: 300px;
+      height: auto;
+      background: #eef3fc;
+    }
+
+    /* Point Markers */
+    .points-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .point-marker {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 15px rgba(44, 90, 160, 0.5);
+      transform: translate(-50%, -50%);
+    }
+    .point-marker:hover {
+      transform: translate(-50%, -50%) scale(1.2);
+      box-shadow: 0 0 20px rgba(0, 188, 212, 0.8);
+    }
+    .point-marker.scanned {
+      background: linear-gradient(135deg, #4caf50, #81c784);
+      box-shadow: 0 0 15px #4caf50;
+    }
+
+    /* Selected Location Badge */
+    #selectedLocation .badge {
+      background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
+      border-radius: 40px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      box-shadow: var(--clay-shadow-primary);
+    }
+
+    /* Upload Areas */
+    .upload-scanner {
+      background: var(--clay-light);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--clay-shadow-sm);
+      transition: all 0.3s ease;
+    }
+    .upload-scanner.active {
+      border: 2px solid var(--accent);
+      box-shadow: var(--clay-shadow-primary);
+    }
+    .upload-scanner .btn-outline-primary {
+      background: var(--clay-light);
+      border: none;
+      border-radius: 40px;
+      padding: 10px 24px;
+      font-weight: 600;
+      color: var(--primary);
+      box-shadow: var(--clay-shadow-sm);
+      transition: all 0.3s ease;
+    }
+    .upload-scanner .btn-outline-primary:hover {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: var(--clay-shadow-primary);
+      transform: translateY(-2px);
+    }
+
+    /* Scanner Progress */
+    .scanner-progress {
+      height: 30px;
+      background: var(--clay-light);
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: inset 4px 4px 10px #b5c9e1, inset -4px -4px 10px #ffffff;
+    }
+    .scanner-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 30px;
+      transition: width 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    /* Analyze Button */
+    .analyze-btn {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      border-radius: 50px;
+      padding: 14px 28px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      box-shadow: var(--clay-shadow-primary);
+      transition: all 0.3s ease;
+    }
+    .analyze-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 8px 8px 20px 0 #7a9fc8, inset -5px -5px 12px 0 #1a3870, inset 5px 5px 12px 0 #80c0f0;
+    }
+    .analyze-btn:disabled {
+      background: #b0c4de;
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Results Panel */
+    .results-panel {
+      background: var(--clay-light);
+      border-radius: 28px;
+      box-shadow: var(--clay-shadow-out);
+      padding: 1.5rem;
+      display: none;
+      margin-top: 1.5rem;
+    }
+
+    /* Visualization Styles */
+    .viz-container {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(44, 90, 160, 0.05);
+      border-radius: 15px;
+    }
+    .viz-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--primary);
+      text-align: center;
+    }
+    .viz-image {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: var(--clay-shadow-sm);
+    }
+    .audio-info {
+      font-size: 0.7rem;
+      color: var(--primary);
+      margin-top: 10px;
+      padding: 8px;
+      background: rgba(44, 90, 160, 0.08);
+      border-radius: 10px;
+    }
+
+    /* Total Progress */
+    .total-progress {
+      background: var(--clay-light);
+      border-radius: 30px;
+      padding: 10px 20px;
+      display: inline-block;
+      box-shadow: inset 3px 3px 8px #b5c9e1, inset -3px -3px 8px #ffffff;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(234, 243, 255, 0.95);
+      margin-top: 60px;
+      border-top: 1px solid rgba(44, 90, 160, 0.1);
+    }
+    .footer-logo .brand-text {
+      font-family: 'Righteous', cursive;
+      font-size: 1.3rem;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .footer-links a {
+      color: var(--primary);
+      margin: 0 10px;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    .footer-links a:hover {
+      transform: translateY(-3px);
+      color: var(--accent);
+    }
+
+    /* Auth Modal */
+    .auth-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 20000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    .auth-modal.active { display: flex; }
+    .auth-window {
+      background: var(--clay-light);
+      border-radius: 36px;
+      box-shadow: 14px 14px 28px #a8bcd0, -14px -14px 28px #f2faff;
+      width: 500px;
+      max-width: 90vw;
+      max-height: 85vh;
+      overflow: hidden;
+      animation: slideUp 0.4s ease;
+    }
+    .auth-header {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .auth-header h4 { margin: 0; font-weight: 700; }
+    .auth-header i { cursor: pointer; font-size: 1.3rem; transition: all 0.2s; }
+    .auth-header i:hover { transform: scale(1.1); }
+    .auth-body { padding: 25px; max-height: 60vh; overflow-y: auto; }
+    .auth-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      background: var(--clay-light);
+      color: var(--primary);
+      box-shadow: inset 3px 3px 8px #b5c9e1, inset -3px -3px 8px #ffffff;
+      transition: all 0.3s ease;
+    }
+    .auth-tab.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: var(--clay-shadow-primary);
+    }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: var(--primary);
+      font-size: 0.85rem;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 50px;
+      background: var(--clay-light);
+      color: #334e68;
+      font-size: 0.9rem;
+      outline: none;
+      box-shadow: inset 5px 5px 9px #b5c9e1, inset -5px -5px 9px #ffffff;
+      transition: box-shadow 0.3s;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      box-shadow: inset 3px 3px 7px #b5c9e1, inset -3px -3px 7px #ffffff;
+    }
+    .btn-auth {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: var(--clay-shadow-primary);
+      transition: all 0.3s ease;
+    }
+    .btn-auth:hover {
+      transform: translateY(-2px);
+      box-shadow: 8px 8px 20px 0 #7a9fc8, inset -5px -5px 12px 0 #1a3870, inset 5px 5px 12px 0 #80c0f0;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+
+
+    /* Floating elements */
+    .floating-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .floating-element {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.05;
+      animation: float 20s infinite linear;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); }
+      100% { transform: translateY(-100px) rotate(360deg); }
+    }
+    .element-1 { top: 10%; left: 5%; animation-duration: 25s; }
+    .element-2 { top: 30%; right: 8%; animation-duration: 30s; }
+    .element-3 { bottom: 20%; left: 10%; animation-duration: 22s; }
+    .element-4 { top: 50%; right: 15%; animation-duration: 28s; }
+    .element-5 { bottom: 10%; right: 20%; animation-duration: 35s; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(135deg, var(--primary-dark), var(--secondary)); }
+
+    @media (max-width: 768px) {
+      body { padding-top: 100px; }
+      .scanner-container { padding: 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Floating Background Elements -->
+  <div class="floating-elements">
+    <div class="floating-element element-1">🫁</div>
+    <div class="floating-element element-2">❤️</div>
+    <div class="floating-element element-3">🌬️</div>
+    <div class="floating-element element-4">💙</div>
+    <div class="floating-element element-5">🩺</div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <span class="brand-icon">🩺</span>
+        <span class="brand-text">AUSCURA</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#diseases">Diseases</a></li>
+          <li class="nav-item"><a class="nav-link active" href="upload.html">Analyze</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="doctors.html">Consult a Doctor</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- SCANNER SECTION -->
+  <section class="scanner-section" style="position: relative;">
+    <!-- Auth buttons -->
+    <div id="authButtons" class="hero-auth-buttons">
+      <button class="hero-btn-login" id="loginBtn">Login</button>
+      <button class="hero-btn-register" id="registerBtn">Register</button>
+    </div>
+    <div id="userInfo" class="hero-user-info" style="display: none;">
+      <span class="hero-user-greeting" id="userNameDisplay"></span>
+      <button class="hero-logout-btn" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="container">
+      <div class="section-header text-center mb-5">
+        <h2 class="fw-bold display-4">LUNG AUSCULTATION</h2>
+        <p class="section-subtitle">Advanced 13-Point Respiratory Assessment System</p>
+        <div class="total-progress mt-3">
+          <span id="totalPoints">0/13</span> Points Uploaded
+          <small style="display: block; font-size: 0.75rem; margin-top: 4px;">(Upload at least 1 point to analyze)</small>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Body Scanner with Interactive Images -->
+        <div class="col-lg-6">
+          <div class="scanner-container">
+            <div class="view-nav">
+              <button class="view-btn active" onclick="switchView('anterior')">
+                <i class="fas fa-undo me-2"></i>Anterior <span class="point-count">5 pts</span>
+              </button>
+              <button class="view-btn" onclick="switchView('lateral')">
+                <i class="fas fa-arrows-left-right me-2"></i>Lateral <span class="point-count">2 pts</span>
+              </button>
+              <button class="view-btn" onclick="switchView('posterior')">
+                <i class="fas fa-sync me-2"></i>Posterior <span class="point-count">6 pts</span>
+              </button>
+            </div>
+
+            <div class="body-model">
+              <!-- ANTERIOR VIEW -->
+              <div id="view-anterior" class="view-container active">
+                <div class="image-container">
+                  <img src="static/images/anterior-view.png" alt="Anterior Lung Auscultation Points" class="medical-image">
+                  <div class="points-overlay">
+                    <div class="point-marker" data-location="1" data-view="anterior" style="top: 46%; left: 43%;">1</div>
+                    <div class="point-marker" data-location="2" data-view="anterior" style="top: 56%; left: 37%;">2</div>
+                    <div class="point-marker" data-location="3" data-view="anterior" style="top: 65%; left: 33%;">3</div>
+                    <div class="point-marker" data-location="4" data-view="anterior" style="top: 41%; left: 50%;">4</div>
+                    <div class="point-marker" data-location="5" data-view="anterior" style="top: 38%; left: 66%;">5</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- LATERAL VIEW -->
+              <div id="view-lateral" class="view-container">
+                <div class="image-container">
+                  <img src="static/images/lateral-view.png" alt="Lateral Lung Auscultation Points" class="medical-image">
+                  <div class="points-overlay">
+                    <div class="point-marker" data-location="6" data-view="lateral" style="top: 48%; left: 46%;">6</div>
+                    <div class="point-marker" data-location="7" data-view="lateral" style="top: 66%; left: 59%;">7</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- POSTERIOR VIEW -->
+              <div id="view-posterior" class="view-container">
+                <div class="image-container">
+                  <img src="static/images/posterior-view.png" alt="Posterior Lung Auscultation Points" class="medical-image">
+                  <div class="points-overlay">
+                    <div class="point-marker" data-location="8" data-view="posterior" style="top: 47%; left: 44%;">8</div>
+                    <div class="point-marker" data-location="9" data-view="posterior" style="top: 47%; left: 59%;">9</div>
+                    <div class="point-marker" data-location="10" data-view="posterior" style="top: 55%; left: 41%;">10</div>
+                    <div class="point-marker" data-location="11" data-view="posterior" style="top: 55%; left: 62%;">11</div>
+                    <div class="point-marker" data-location="12" data-view="posterior" style="top: 64%; left: 35%;">12</div>
+                    <div class="point-marker" data-location="13" data-view="posterior" style="top: 64%; left: 68%;">13</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center mt-4">
+              <small style="color: var(--primary);">
+                <i class="fas fa-mouse-pointer me-2"></i>Click on numbered points (1-13) to upload audio samples
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Interface -->
+        <div class="col-lg-6">
+          <div class="scanner-container">
+            <h4 class="text-center mb-4" style="color: var(--primary); font-weight: 700;">
+              <i class="fas fa-microphone-alt me-2"></i>AUDIO CAPTURE MODULE
+            </h4>
+            
+            <div id="selectedLocation" class="text-center mb-4">
+              <span class="badge" style="font-size: 1rem; padding: 12px 24px;">
+                <i class="fas fa-crosshairs me-2"></i>SELECT POINT (1-13)
+              </span>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label" style="color: var(--primary); font-weight: 600;">
+                <i class="fas fa-wave-square me-2"></i>Upload Progress
+              </label>
+              <div class="scanner-progress">
+                <div id="uploadProgress" class="scanner-progress-bar">0/13 Points</div>
+              </div>
+            </div>
+
+            <div id="uploadAreas" class="mb-4"></div>
+
+            <div class="text-center">
+              <button id="analyzeBtn" class="analyze-btn btn-lg w-100" disabled>
+                <i class="fas fa-lock me-2"></i>UPLOAD AT LEAST 1 POINT
+              </button>
+            </div>
+          </div>
+
+          <div id="resultsPanel" class="results-panel">
+            <h4 class="text-center mb-4" style="color: var(--primary); font-weight: 700;">
+              <i class="fas fa-chart-line me-2"></i>SCAN RESULTS
+            </h4>
+            <div id="resultContent" class="text-center"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-4">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <span class="brand-icon">🩺</span>
+          <span class="brand-text">AUSCURA</span>
+        </div>
+        <p class="footer-tagline mt-2" style="color: var(--primary);">13-Point Lung Auscultation System</p>
+        <div class="footer-links my-3">
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fas fa-envelope"></i></a>
+        </div>
+        <small style="color: var(--primary); opacity: 0.7;">© 2025 Auscura | Complete Respiratory Assessment</small>
+      </div>
+    </div>
+  </footer>
+
+
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <script>
+    // ===== GLOBAL VARIABLES =====
+    let currentUserType = null; // Store user type globally
+    
+    // ===== VIEW SWITCHING FUNCTION =====
+    window.switchView = function(view) {
+      console.log('Switching to view:', view);
+      
+      const containers = document.querySelectorAll('.view-container');
+      containers.forEach(container => {
+        container.classList.remove('active');
+      });
+      
+      const activeView = document.getElementById(`view-${view}`);
+      if (activeView) {
+        activeView.classList.add('active');
+      }
+      
+      const buttons = document.querySelectorAll('.view-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      const clickedBtn = Array.from(buttons).find(btn => 
+        btn.textContent.toLowerCase().includes(view.toLowerCase())
+      );
+      if (clickedBtn) {
+        clickedBtn.classList.add('active');
+      }
+    };
+
+    // ===== Scanner functionality =====
+    const points = {
+      1: { name: "Right Upper", view: "anterior" },
+      2: { name: "Right Middle", view: "anterior" },
+      3: { name: "Right Lower", view: "anterior" },
+      4: { name: "Trachea", view: "anterior" },
+      5: { name: "Collarbone", view: "anterior" },
+      6: { name: "Right Upper Lateral", view: "lateral" },
+      7: { name: "Right Lower Lateral", view: "lateral" },
+      8: { name: "Left Upper Back", view: "posterior" },
+      9: { name: "Right Upper Back", view: "posterior" },
+      10: { name: "Left Middle Back", view: "posterior" },
+      11: { name: "Right Middle Back", view: "posterior" },
+      12: { name: "Left Lower Back", view: "posterior" },
+      13: { name: "Right Lower Back", view: "posterior" }
+    };
+
+    let selectedPoint = null;
+    const uploadedFiles = {};
+
+    function initializeUploadAreas() {
+      const uploadAreasContainer = document.getElementById('uploadAreas');
+      uploadAreasContainer.innerHTML = '';
+      for (let i = 1; i <= 13; i++) {
+        const pointNum = i.toString();
+        const uploadArea = document.createElement('div');
+        uploadArea.className = 'upload-scanner';
+        uploadArea.id = `upload-${pointNum}`;
+        uploadArea.style.display = 'none';
+        uploadArea.innerHTML = `
+          <div class="text-center">
+            <i class="fas fa-file-waveform fa-3x mb-3" style="color: var(--primary);"></i>
+            <h5 style="color: var(--primary);">POINT ${pointNum} - ${points[pointNum].name}</h5>
+            <p class="mb-3" style="color: var(--primary); opacity: 0.7;">Upload respiratory audio sample</p>
+            <input type="file" accept="audio/*" class="d-none" id="file-${pointNum}">
+            <button class="btn-outline-primary" onclick="document.getElementById('file-${pointNum}').click()">
+              <i class="fas fa-upload me-2"></i>CAPTURE AUDIO
+            </button>
+            <div class="file-info mt-3" id="file-info-${pointNum}"></div>
+          </div>
+        `;
+        uploadAreasContainer.appendChild(uploadArea);
+        const fileInput = document.getElementById(`file-${pointNum}`);
+        fileInput.addEventListener('change', (e) => handleFileUpload(pointNum, e.target.files[0]));
+      }
+    }
+
+    function handleFileUpload(pointNum, file) {
+      if (file) {
+        uploadedFiles[pointNum] = file;
+        const fileInfo = document.getElementById(`file-info-${pointNum}`);
+        fileInfo.innerHTML = `
+          <div class="alert" style="background: rgba(44,90,160,0.1); border: 1px solid var(--accent); border-radius: 15px; color: var(--primary);">
+            <i class="fas fa-check-circle me-2" style="color: var(--accent);"></i>
+            ${file.name} (${(file.size / 1024).toFixed(1)} KB)
+            <button class="btn btn-sm ms-2" onclick="removeFile('${pointNum}')" 
+                    style="background: rgba(44,90,160,0.1); border: none; border-radius: 20px; padding: 2px 10px;">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `;
+        document.getElementById(`upload-${pointNum}`).classList.add('active');
+        document.querySelectorAll(`.point-marker[data-location="${pointNum}"]`).forEach(marker => {
+          marker.classList.add('scanned');
+        });
+        updateUploadProgress();
+        checkAnalyzeButton();
+        updateTotalProgress();
+      }
+    }
+
+    window.removeFile = function(pointNum) {
+      delete uploadedFiles[pointNum];
+      document.getElementById(`file-info-${pointNum}`).innerHTML = '';
+      document.getElementById(`upload-${pointNum}`).classList.remove('active');
+      document.getElementById(`file-${pointNum}`).value = '';
+      document.querySelectorAll(`.point-marker[data-location="${pointNum}"]`).forEach(marker => {
+        marker.classList.remove('scanned');
+      });
+      updateUploadProgress();
+      checkAnalyzeButton();
+      updateTotalProgress();
+    };
+
+    function updateUploadProgress() {
+      const uploadedCount = Object.keys(uploadedFiles).length;
+      const progress = (uploadedCount / 13) * 100;
+      const progressElement = document.getElementById('uploadProgress');
+      if (progressElement) {
+        progressElement.style.width = `${progress}%`;
+        progressElement.innerHTML = `${uploadedCount}/13 Points`;
+      }
+    }
+
+    function updateTotalProgress() {
+      const uploadedCount = Object.keys(uploadedFiles).length;
+      document.getElementById('totalPoints').innerText = `${uploadedCount}/13`;
+    }
+
+    function checkAnalyzeButton() {
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const uploadedCount = Object.keys(uploadedFiles).length;
+      analyzeBtn.disabled = uploadedCount === 0;
+      if (uploadedCount === 0) {
+        analyzeBtn.innerHTML = '<i class="fas fa-lock me-2"></i>UPLOAD AT LEAST 1 POINT';
+      } else {
+        analyzeBtn.innerHTML = `<i class="fas fa-brain me-2"></i>ANALYZE ${uploadedCount} POINT${uploadedCount > 1 ? 'S' : ''}`;
+      }
+    }
+
+    // Point marker click handlers
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.point-marker').forEach(marker => {
+        marker.addEventListener('click', function() {
+          const pointNum = this.dataset.location;
+          selectedPoint = pointNum;
+          const view = points[pointNum].view;
+          
+          switchView(view);
+          
+          document.getElementById('selectedLocation').innerHTML = `
+            <span class="badge" style="font-size: 1rem; padding: 12px 24px;">
+              <i class="fas fa-location-crosshairs me-2"></i>POINT ${pointNum} - ${points[pointNum].name}
+              ${uploadedFiles[pointNum] ? '<span class="ms-2"><i class="fas fa-check-circle"></i></span>' : ''}
+            </span>
+          `;
+          
+          for (let i = 1; i <= 13; i++) {
+            const uploadDiv = document.getElementById(`upload-${i}`);
+            if (uploadDiv) {
+              uploadDiv.style.display = i.toString() === pointNum ? 'block' : 'none';
+            }
+          }
+        });
+      });
+    });
+
+    // Get current user type from localStorage
+    function getUserType() {
+      const storedType = localStorage.getItem('auscura_userType');
+      console.log('Current user type from storage:', storedType);
+      return storedType;
+    }
+
+    // Analyze Button Handler
+    document.getElementById('analyzeBtn').addEventListener('click', async function() {
+      const uploadedCount = Object.keys(uploadedFiles).length;
+      if (uploadedCount === 0) {
+        alert('Please upload at least one audio sample before analyzing');
+        return;
+      }
+      
+      // Get user type directly from localStorage each time
+      const userType = getUserType();
+      console.log('Analyzing as user type:', userType);
+      
+      const resultsPanel = document.getElementById('resultsPanel');
+      const resultContent = document.getElementById('resultContent');
+      
+      resultContent.innerHTML = `
+        <div class="mb-4">
+          <i class="fas fa-spinner fa-spin fa-3x mb-3" style="color: var(--primary);"></i>
+        </div>
+        <h5 style="color: var(--primary);">PROCESSING ${uploadedCount} POINT${uploadedCount > 1 ? 'S' : ''}</h5>
+        <div class="progress mb-3" style="height: 10px; background: rgba(44,90,160,0.1); border-radius: 10px;">
+          <div class="progress-bar" style="width: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 10px;"></div>
+        </div>
+        <p style="color: var(--primary);">Analyzing respiratory patterns...</p>
+      `;
+      resultsPanel.style.display = 'block';
+      
+      try {
+        const formData = new FormData();
+        for (let i = 1; i <= 13; i++) {
+          if (uploadedFiles[i]) {
+            formData.append(`point_${i}`, uploadedFiles[i]);
+          }
+        }
+        
+        // Add user type to form data
+        formData.append('user_type', userType || 'patient');
+        
+        const BACKEND_URL = 'http://localhost:5000';
+        console.log('Sending request to backend with user_type:', userType);
+        
+        const response = await fetch(`${BACKEND_URL}/api/predict-multiple`, {
+          method: 'POST',
+          body: formData
+          // Don't set Content-Type header - let browser set it with boundary
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Backend error response:', errorText);
+          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Backend response:', data);
+        console.log('User type from response check:', userType);
+        
+        if (data.success) {
+          const finalDiagnosis = data.final_diagnosis;
+          const confidence = data.confidence;
+          const recommendation = data.recommendation;
+          const color = getColor(finalDiagnosis);
+          const icon = getIcon(finalDiagnosis);
+          
+          let resultHtml = `
+            <div class="mb-4">
+              <i class="fas ${icon} fa-3x mb-3" style="color: ${color};"></i>
+            </div>
+            <h3 style="color: ${color}; font-weight: 700;">${finalDiagnosis}</h3>
+            <div class="scanner-progress mb-4">
+              <div class="scanner-progress-bar" style="width: ${confidence}%">${confidence}% CONFIDENCE</div>
+            </div>
+            <div style="background: rgba(44,90,160,0.08); padding: 1rem; border-radius: 15px;">
+              <p class="mb-2"><strong>Scan Complete:</strong> ${data.points_analyzed} point${data.points_analyzed > 1 ? 's' : ''} processed</p>
+              <p class="mb-0"><i class="fas fa-check-circle me-2" style="color: var(--accent);"></i>Respiratory assessment complete</p>
+            </div>
+            <div class="mt-3" style="padding: 10px; background: rgba(44,90,160,0.05); border-radius: 15px;">
+              <i class="fas fa-info-circle me-2" style="color: var(--accent);"></i>
+              <strong>Recommendation:</strong> ${recommendation}
+            </div>
+          `;
+          
+          // FOR DOCTORS: Show detailed visualizations if available AND user is doctor
+          console.log('Checking doctor visualizations - userType:', userType, 'has predictions:', !!data.predictions);
+          
+          if (userType === 'doctor' && data.predictions && data.predictions.length > 0) {
+            resultHtml += `<div class="viz-container mt-4">
+              <h5 style="color: var(--primary);"><i class="fas fa-chart-line me-2"></i>Clinical Analysis - Detailed Visualization</h5>`;
+            
+            for (const pred of data.predictions) {
+              if (pred.status === 'success') {
+                resultHtml += `
+                  <div class="mt-4" style="border-top: 1px solid rgba(44,90,160,0.2); padding-top: 20px;">
+                    <h6 style="color: var(--primary);">📍 Point ${pred.point}: ${pred.prediction} <span style="font-size: 0.8rem;">(${pred.confidence}% confidence)</span></h6>
+                `;
+                
+                // Check if visualizations exist
+                if (pred.visualizations) {
+                  resultHtml += `<div class="row mt-3">`;
+                  if (pred.visualizations.waveform) {
+                    resultHtml += `<div class="col-md-4">
+                      <div class="viz-title">📊 Waveform</div>
+                      <img src="data:image/png;base64,${pred.visualizations.waveform}" class="viz-image" alt="Waveform">
+                    </div>`;
+                  }
+                  if (pred.visualizations.spectrogram) {
+                    resultHtml += `<div class="col-md-4">
+                      <div class="viz-title">🎵 Spectrogram</div>
+                      <img src="data:image/png;base64,${pred.visualizations.spectrogram}" class="viz-image" alt="Spectrogram">
+                    </div>`;
+                  }
+                  if (pred.visualizations.mfcc) {
+                    resultHtml += `<div class="col-md-4">
+                      <div class="viz-title">📈 MFCC Features</div>
+                      <img src="data:image/png;base64,${pred.visualizations.mfcc}" class="viz-image" alt="MFCC">
+                    </div>`;
+                  }
+                  resultHtml += `</div>`;
+                } else {
+                  resultHtml += `<div class="alert alert-info mt-2" style="background: rgba(44,90,160,0.1); border-radius: 10px; padding: 10px;">
+                    <small>ℹ️ Detailed visualizations not available for this audio sample.</small>
+                  </div>`;
+                }
+                
+                if (pred.audio_info) {
+                  resultHtml += `
+                    <div class="audio-info">
+                      <i class="fas fa-info-circle me-2"></i>
+                      <strong>Audio Details:</strong> Duration: ${pred.audio_info.duration}s | Sample Rate: ${pred.audio_info.sample_rate}Hz | Size: ${(pred.audio_info.file_size / 1024).toFixed(1)} KB
+                    </div>
+                  `;
+                }
+                resultHtml += `</div>`;
+              } else if (pred.status === 'error') {
+                resultHtml += `
+                  <div class="mt-3" style="border-top: 1px solid rgba(44,90,160,0.2); padding-top: 15px;">
+                    <h6 style="color: #f44336;">Point ${pred.point}: Processing Error</h6>
+                    <div class="alert alert-danger">${pred.error || 'Unknown error'}</div>
+                  </div>
+                `;
+              }
+            }
+            resultHtml += `</div>`;
+          } else if (data.predictions && data.predictions.length > 0) {
+            // For patients: Show simple results summary
+            resultHtml += `<div class="mt-3" style="background: rgba(44,90,160,0.05); padding: 1rem; border-radius: 15px;">
+              <small style="color: var(--primary);">📋 Individual Point Results:</small>`;
+            for (const pred of data.predictions) {
+              if (pred.status === 'success') {
+                resultHtml += `<div style="font-size: 0.8rem; margin-top: 5px;">
+                  <strong>Point ${pred.point}:</strong> ${pred.prediction} (${pred.confidence}% confidence)
+                </div>`;
+              }
+            }
+            resultHtml += `</div>`;
+          }
+          
+          resultHtml += `
+            <div style="background: rgba(255, 100, 100, 0.1); border-left: 4px solid #ff9800; padding: 12px; margin-top: 20px; border-radius: 8px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-exclamation-triangle" style="color: #ff9800;"></i>
+                <div style="font-size: 0.7rem; color: #ff9800;">
+                  <strong>⚠️ Medical Disclaimer:</strong> This AI-based analysis is for reference only. 
+                  Please consult a qualified healthcare professional for proper diagnosis.
+                </div>
+              </div>
+            </div>
+          `;
+          
+          resultContent.innerHTML = resultHtml;
+        } else {
+          throw new Error(data.error || 'Analysis failed');
+        }
+      } catch (error) {
+        console.error('Analysis error:', error);
+        resultContent.innerHTML = `
+          <div class="mb-4"><i class="fas fa-exclamation-triangle fa-3x mb-3" style="color: #f44336;"></i></div>
+          <h5 style="color: #f44336;">ANALYSIS ERROR</h5>
+          <p style="color: var(--primary);">${error.message}</p>
+          <p style="font-size: 0.8rem;">Make sure the backend server is running: <code>cd backend && python app.py</code></p>
+          <details style="margin-top: 15px; text-align: left;">
+            <summary style="color: var(--primary); cursor: pointer;">Debug Info</summary>
+            <pre style="background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px; font-size: 0.7rem; overflow-x: auto;">User Type: ${getUserType()}\nUploaded Files: ${Object.keys(uploadedFiles).length}</pre>
+          </details>
+        `;
+      }
+    });
+
+    function getColor(diagnosis) {
+      const colors = {
+        'Normal': '#4caf50',
+        'COPD': '#ff9800',
+        'Asthma': '#2196f3',
+        'Pneumonia': '#f44336'
+      };
+      return colors[diagnosis] || '#00bcd4';
+    }
+
+    function getIcon(diagnosis) {
+      const icons = {
+        'Normal': 'fa-heartbeat',
+        'COPD': 'fa-lungs',
+        'Asthma': 'fa-wind',
+        'Pneumonia': 'fa-virus'
+      };
+      return icons[diagnosis] || 'fa-stethoscope';
+    }
+
+
+
+  <!-- AUTH SCRIPT -->
+    const SUPABASE_URL = 'https://xywyheflpidhpbhxpyqm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5d3loZWZscGlkaHBiaHhweXFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMjcwNTAsImV4cCI6MjA4ODkwMzA1MH0.nvJAIvfFT_OdSljfTstukeIHp6ivEkhoC-veOuQDPVk';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentUser = null;
+    let userType = null;
+    let currentAuthType = 'patient';
+
+    function loadSession() {
+      const storedUser = localStorage.getItem('auscura_user');
+      const storedType = localStorage.getItem('auscura_userType');
+      console.log('Loading session - userType from storage:', storedType);
+      if (storedUser && storedType) {
+        try {
+          currentUser = JSON.parse(storedUser);
+          userType = storedType;
+          return true;
+        } catch (e) { console.error('Failed to parse stored user', e); }
+      }
+      return false;
+    }
+    
+    function clearSession() { 
+      localStorage.removeItem('auscura_user'); 
+      localStorage.removeItem('auscura_userType');
+      userType = null;
+      currentUser = null;
+    }
+    
+    function updateAuthBar() {
+      const authButtonsDiv = document.getElementById('authButtons');
+      const userInfoDiv = document.getElementById('userInfo');
+      const userNameSpan = document.getElementById('userNameDisplay');
+      if (currentUser && userType) {
+        authButtonsDiv.style.display = 'none';
+        userInfoDiv.style.display = 'flex';
+        userNameSpan.innerText = `Hi, ${currentUser.name}`;
+        console.log('User logged in as:', userType);
+      } else {
+        authButtonsDiv.style.display = 'flex';
+        userInfoDiv.style.display = 'none';
+      }
+    }
+    
+    function openAuthModal() { document.getElementById('authModal').classList.add('active'); showLogin(); }
+    function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
+    function showLogin() { 
+      document.getElementById('authTitle').innerText = 'Login';
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('registerPatientForm').style.display = 'none';
+      document.getElementById('registerDoctorForm').style.display = 'none';
+    }
+    function showRegister() { 
+      document.getElementById('authTitle').innerText = 'Register';
+      document.getElementById('loginForm').style.display = 'none';
+      if (currentAuthType === 'patient') {
+        document.getElementById('registerPatientForm').style.display = 'block';
+        document.getElementById('registerDoctorForm').style.display = 'none';
+      } else {
+        document.getElementById('registerPatientForm').style.display = 'none';
+        document.getElementById('registerDoctorForm').style.display = 'block';
+      }
+    }
+    
+    window.switchAuthTab = function(type) { 
+      currentAuthType = type; 
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      if (document.getElementById('loginForm').style.display !== 'none') return;
+      showRegister();
+    };
+    
+    window.registerPatient = async function() {
+      const name = document.getElementById('regPatientName').value;
+      const email = document.getElementById('regPatientEmail').value;
+      const phone = document.getElementById('regPatientPhone').value;
+      const password = document.getElementById('regPatientPassword').value;
+      if (!name || !email || !phone || !password) { alert('Please fill all fields'); return; }
+      try { 
+        const { error } = await supabaseClient.from('patients').insert([{ name, email, phone, password }]); 
+        if (error) throw error; 
+        alert('Registration successful! Please login.'); 
+        showLogin(); 
+      } catch (error) { alert(error.message); }
+    };
+    
+    async function uploadDoctorImage(file) { 
+      if (!file) return null; 
+      const fileExt = file.name.split('.').pop(); 
+      const fileName = `${Date.now()}.${fileExt}`; 
+      const { error } = await supabaseClient.storage.from('doctors-photos').upload(`doctor-${fileName}`, file); 
+      if (error) throw error; 
+      const { data: urlData } = supabaseClient.storage.from('doctors-photos').getPublicUrl(`doctor-${fileName}`); 
+      return urlData.publicUrl; 
+    }
+    
+    window.registerDoctor = async function() {
+      const name = document.getElementById('regDoctorName').value;
+      const email = document.getElementById('regDoctorEmail').value;
+      const phone = document.getElementById('regDoctorPhone').value;
+      const specialty = document.getElementById('regDoctorSpecialty').value;
+      const qualification = document.getElementById('regDoctorQualification').value;
+      const experience = document.getElementById('regDoctorExperience').value;
+      const hospital = document.getElementById('regDoctorHospital').value;
+      const fee = document.getElementById('regDoctorFee').value;
+      const languages = document.getElementById('regDoctorLanguages').value.split(',').map(l => l.trim());
+      const password = document.getElementById('regDoctorPassword').value;
+      const imageFile = document.getElementById('regDoctorImage').files[0];
+      if (!name || !email || !phone || !specialty || !password) { alert('Please fill required fields'); return; }
+      let imageUrl = '';
+      if (imageFile) { try { imageUrl = await uploadDoctorImage(imageFile); } catch (e) { alert('Image upload failed: ' + e.message); return; } }
+      try { 
+        const { error } = await supabaseClient.from('doctors_registered').insert([{ 
+          name, email, phone, specialty, qualification, experience, hospital, fee, languages, password, image: imageUrl 
+        }]); 
+        if (error) throw error; 
+        alert('Registration successful! Please login.'); 
+        showLogin(); 
+      } catch (error) { alert(error.message); }
+    };
+    
+    window.login = async function() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      if (!email || !password) { alert('Please fill both fields'); return; }
+      try {
+        let { data: patients } = await supabaseClient.from('patients').select('*').eq('email', email).eq('password', password);
+        if (patients && patients.length > 0) { 
+          currentUser = patients[0]; 
+          userType = 'patient';
+          console.log('Logged in as PATIENT');
+        } else { 
+          let { data: doctors } = await supabaseClient.from('doctors_registered').select('*').eq('email', email).eq('password', password);
+          if (doctors && doctors.length > 0) { 
+            currentUser = doctors[0]; 
+            userType = 'doctor';
+            console.log('Logged in as DOCTOR');
+          } else throw new Error('Invalid email or password');
+        }
+        localStorage.setItem('auscura_user', JSON.stringify(currentUser));
+        localStorage.setItem('auscura_userType', userType);
+        updateAuthBar();
+        closeAuthModal();
+        // Reload the page to ensure all components reflect the user type
+        window.location.reload();
+      } catch (error) { alert(error.message); }
+    };
+    
+    window.logout = function() { 
+      clearSession(); 
+      updateAuthBar();
+      window.location.reload();
+    };
+    
+    loadSession();
+    updateAuthBar();
+    document.getElementById('loginBtn').addEventListener('click', () => { openAuthModal(); showLogin(); });
+    document.getElementById('registerBtn').addEventListener('click', () => { openAuthModal(); showRegister(); });
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+  </script>
+
+  <!-- Auth Modal HTML -->
+  <div class="auth-modal" id="authModal">
+    <div class="auth-window">
+      <div class="auth-header">
+        <h4 id="authTitle">Login</h4>
+        <i class="fas fa-times" onclick="closeAuthModal()"></i>
+      </div>
+      <div class="auth-body">
+        <div class="auth-tabs">
+          <span class="auth-tab active" onclick="switchAuthTab('patient')">Patient</span>
+          <span class="auth-tab" onclick="switchAuthTab('doctor')">Doctor</span>
+        </div>
+        <div id="loginForm">
+          <div class="form-group"><label>Email</label><input type="email" id="loginEmail" class="form-control" placeholder="Enter your email"></div>
+          <div class="form-group"><label>Password</label><input type="password" id="loginPassword" class="form-control" placeholder="Enter your password"></div>
+          <button class="btn-auth" onclick="login()">Login</button>
+          <p class="text-center mt-3">Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+        </div>
+        <div id="registerPatientForm" style="display: none;">
+          <div class="form-group"><label>Full Name</label><input type="text" id="regPatientName" class="form-control" placeholder="Enter your full name"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="regPatientEmail" class="form-control" placeholder="Enter your email"></div>
+          <div class="form-group"><label>Phone</label><input type="tel" id="regPatientPhone" class="form-control" placeholder="Enter your phone number"></div>
+          <div class="form-group"><label>Password</label><input type="password" id="regPatientPassword" class="form-control" placeholder="Create password"></div>
+          <button class="btn-auth" onclick="registerPatient()">Register as Patient</button>
+          <p class="text-center mt-3">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+        </div>
+        <div id="registerDoctorForm" style="display: none;">
+          <div class="form-group"><label>Full Name</label><input type="text" id="regDoctorName" class="form-control" placeholder="Dr. John Doe"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="regDoctorEmail" class="form-control" placeholder="doctor@hospital.com"></div>
+          <div class="form-group"><label>Phone</label><input type="tel" id="regDoctorPhone" class="form-control" placeholder="+91 98765 43210"></div>
+          <div class="form-group"><label>Specialty</label><select id="regDoctorSpecialty" class="form-control"><option>Pulmonologist</option><option>Respiratory Specialist</option><option>Critical Care Specialist</option><option>Pediatric Pulmonologist</option></select></div>
+          <div class="form-group"><label>Qualifications</label><input type="text" id="regDoctorQualification" class="form-control" placeholder="MD, DNB (Pulmonology)"></div>
+          <div class="form-group"><label>Experience (years)</label><input type="number" id="regDoctorExperience" class="form-control" placeholder="10"></div>
+          <div class="form-group"><label>Hospital/Clinic</label><input type="text" id="regDoctorHospital" class="form-control" placeholder="City Hospital, Mumbai"></div>
+          <div class="form-group"><label>Consultation Fee (₹)</label><input type="text" id="regDoctorFee" class="form-control" placeholder="800"></div>
+          <div class="form-group"><label>Languages Spoken</label><input type="text" id="regDoctorLanguages" class="form-control" placeholder="English, Hindi, Marathi"></div>
+          <div class="form-group"><label>Profile Photo</label><input type="file" id="regDoctorImage" class="form-control" accept="image/*"></div>
+          <div class="form-group"><label>Password</label><input type="password" id="regDoctorPassword" class="form-control" placeholder="Create password"></div>
+          <button class="btn-auth" onclick="registerDoctor()">Register as Doctor</button>
+          <p class="text-center mt-3">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

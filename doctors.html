@@ -1,0 +1,4232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auscura | Consult a Doctor</title>
+
+  <!-- Fonts + Bootstrap -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Righteous&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+  <link rel="stylesheet" href="static/css/style.css">
+  <style>
+    /* ========== Original variables & base styles ========== */
+    :root {
+      --primary: #2c5aa0;
+      --primary-dark: #1e3d72;
+      --secondary: #4fc3f7;
+      --accent: #00bcd4;
+      --success: #4caf50;
+      --danger: #f44336;
+      --warning: #ff9800;
+      --dark: #263238;
+      --light: #f8fafc;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 100%);
+      padding-top: 70px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ========== ADDITIONAL ANIMATED BACKGROUND ELEMENTS ========== */
+    
+    /* Animated gradient overlay for the main page background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 50%, rgba(44, 90, 160, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(0, 188, 212, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 40% 20%, rgba(76, 175, 80, 0.02) 0%, transparent 50%);
+      pointer-events: none;
+      animation: slowBreathing 8s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes slowBreathing {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Animated floating particles on the background */
+    .bg-particle {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      opacity: 0.3;
+      pointer-events: none;
+      animation: floatParticleSimple 12s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes floatParticleSimple {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* Floating medical icons background */
+    .medical-float-icon {
+      position: fixed;
+      font-size: 20px;
+      opacity: 0.03;
+      pointer-events: none;
+      animation: floatIconSlow 30s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes floatIconSlow {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+      }
+    }
+
+    /* Animated wave effect on filter section */
+    .filter-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .filter-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(44, 90, 160, 0.05), transparent);
+      animation: shimmer 8s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      20% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    /* Doctor cards hover effect enhancement */
+    .doctor-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .doctor-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, transparent 0%, rgba(44, 90, 160, 0.03) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+      pointer-events: none;
+    }
+
+    .doctor-card:hover::before {
+      transform: translateX(100%);
+    }
+
+    /* Dashboard card subtle pulse animation */
+    .dashboard-card {
+      animation: cardPulse 3s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+
+    .dashboard-card:hover {
+      animation-play-state: running;
+    }
+
+    @keyframes cardPulse {
+      0%, 100% {
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      }
+      50% {
+        box-shadow: 0 8px 30px rgba(44, 90, 160, 0.15);
+      }
+    }
+
+    /* Welcome card shine animation */
+    .doctor-profile-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .doctor-profile-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+      opacity: 0;
+      animation: shine 8s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% {
+        opacity: 0;
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+      }
+      10% {
+        opacity: 0.5;
+      }
+      20% {
+        opacity: 0;
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* Stat badges pulse on hover */
+    .stat-item {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-item:hover {
+      transform: scale(1.05);
+      background: rgba(44, 90, 160, 0.1);
+    }
+
+    /* Tab hover animation */
+    .dashboard-tab {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-tab::before {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .dashboard-tab:hover::before {
+      width: 80%;
+    }
+
+    .dashboard-tab.active::before {
+      width: 80%;
+      background: var(--primary);
+    }
+
+    /* Appointment card entrance animation */
+    .appointment-card {
+      animation: slideInFromLeft 0.5s ease backwards;
+      animation-delay: calc(var(--order, 0) * 0.1s);
+    }
+
+    @keyframes slideInFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Patient card entrance animation */
+    .patient-card {
+      animation: fadeInUp 0.5s ease backwards;
+      animation-delay: calc(var(--order, 0) * 0.05s);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Review card hover glow */
+    .review-item-card {
+      transition: all 0.3s ease;
+    }
+
+    .review-item-card:hover {
+      box-shadow: 0 8px 25px rgba(44, 90, 160, 0.15);
+      transform: translateY(-2px);
+    }
+
+    /* Day card pulse on hover */
+    .day-card {
+      transition: all 0.3s ease;
+    }
+
+    .day-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    /* Button ripple effect */
+    .btn-chat, .btn-book, .btn-view-reviews, .btn-chat-sm, .btn-cancel {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-chat::after, .btn-book::after, .btn-view-reviews::after, .btn-chat-sm::after, .btn-cancel::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-chat:active::after, .btn-book:active::after, .btn-view-reviews:active::after, .btn-chat-sm:active::after, .btn-cancel:active::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Search input glow animation */
+    .search-box input {
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Filter tag bounce on click */
+    .filter-tag {
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .filter-tag:active {
+      transform: scale(0.95);
+    }
+
+    /* Smooth scroll behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Gradient text animation for page header */
+    .page-header h1 {
+      background: linear-gradient(135deg, var(--primary), var(--accent), var(--primary));
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 5s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    /* Custom scrollbar with gradient */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+    }
+
+    /* Dashboard breathing glow effect */
+    #doctorDashboard {
+      transition: box-shadow 0.3s ease;
+    }
+
+    #doctorDashboard:hover {
+      box-shadow: 0 20px 40px rgba(44, 90, 160, 0.15);
+    }
+
+    .navbar {
+      background: white !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 15px 0;
+      top: 0;
+      z-index: 1030;
+    }
+    .navbar-brand {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary) !important;
+    }
+    .nav-link {
+      color: #333 !important;
+      font-weight: 500;
+      margin: 0 10px;
+      transition: color 0.3s ease;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary) !important;
+    }
+
+    .auth-bar {
+      margin-top: 25px;
+      margin-bottom: 15px;
+      text-align: right;
+      background: transparent;
+      box-shadow: none;
+      position: static;
+      width: auto;
+    }
+    .auth-bar .container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      align-items: center;
+    }
+    .auth-bar .btn {
+      padding: 5px 20px;
+    }
+    .auth-bar .user-greeting {
+      font-weight: 600;
+      color: var(--primary);
+      margin-right: 10px;
+    }
+
+    .doctors-section {
+      padding: 30px 0 60px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .page-header h1 {
+      font-family: 'Righteous', cursive;
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+    }
+    .page-header p {
+      color: var(--dark);
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .filter-section {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .search-box {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+    }
+    .search-box input {
+      width: 100%;
+      padding: 12px 20px 12px 45px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    .search-box input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(44,90,160,0.1);
+    }
+    .filter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .filter-tag {
+      padding: 8px 20px;
+      background: #f0f0f0;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    .filter-tag:hover, .filter-tag.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Doctor cards (patient view) */
+    .doctor-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      height: 100%;
+      position: relative;
+    }
+    .doctor-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .doctor-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 3px solid var(--primary);
+    }
+    .doctor-info {
+      padding: 20px;
+    }
+    .doctor-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+    .doctor-specialty {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+    .doctor-rating {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .stars {
+      color: #ffc107;
+    }
+    .rating-number {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .doctor-details {
+      margin-bottom: 15px;
+    }
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      color: #555;
+      font-size: 0.9rem;
+    }
+    .detail-item i {
+      width: 20px;
+      color: var(--primary);
+    }
+    .doctor-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    .btn-chat {
+      flex: 1;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-chat:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(44,90,160,0.3);
+    }
+    .btn-book {
+      flex: 1;
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 8px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-book:hover {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-view-reviews {
+      width: 100%;
+      background: var(--light);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 8px;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+    .btn-view-reviews:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* ========== ENHANCED DASHBOARD STYLES ========== */
+    /* Profile card */
+    .doctor-profile-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+    .profile-pic {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--primary);
+    }
+    .profile-pic img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-pic .upload-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      text-align: center;
+      font-size: 12px;
+      padding: 4px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .profile-pic:hover .upload-overlay {
+      opacity: 1;
+    }
+    .profile-info h3 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+    .profile-info p {
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .profile-stats {
+      display: flex;
+      gap: 20px;
+      margin-top: 8px;
+    }
+    .stat-item {
+      background: var(--light);
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--primary);
+    }
+    .stat-item i {
+      margin-right: 5px;
+    }
+
+    /* Dashboard tabs */
+    .dashboard-tabs {
+      display: flex;
+      gap: 25px;
+      border-bottom: 2px solid #e9ecef;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    .dashboard-tab {
+      padding: 10px 0;
+      cursor: pointer;
+      font-weight: 600;
+      color: #6c757d;
+      transition: all 0.3s;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    .dashboard-tab i {
+      margin-right: 8px;
+    }
+    .dashboard-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .dashboard-tab:hover:not(.active) {
+      color: var(--primary-dark);
+    }
+
+    /* Dashboard cards (common) */
+    .dashboard-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .dashboard-card h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--dark);
+      border-left: 4px solid var(--primary);
+      padding-left: 12px;
+    }
+
+    /* Appointment card */
+    .appointment-card {
+      background: white;
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .appointment-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .appointment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .appointment-header strong {
+      font-size: 1.05rem;
+    }
+    .badge-confirmed {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .appointment-details {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      color: #555;
+    }
+    .appointment-details i {
+      width: 20px;
+      color: var(--primary);
+    }
+    .appointment-reason {
+      font-size: 0.85rem;
+      color: #777;
+      margin-bottom: 12px;
+      padding-left: 20px;
+      border-left: 2px solid #e9ecef;
+    }
+    .appointment-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .btn-chat-sm {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid #dc3545;
+      color: #dc3545;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+    .btn-cancel:hover {
+      background: #dc3545;
+      color: white;
+    }
+
+    /* Patient card */
+    .patient-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      border-radius: 16px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .patient-avatar {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-right: 15px;
+    }
+    .patient-info {
+      flex: 1;
+    }
+    .patient-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .patient-email {
+      font-size: 0.75rem;
+      color: #888;
+    }
+    .patient-actions .btn-chat-sm {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    /* Review item */
+    .review-item-card {
+      background: white;
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .review-stars {
+      color: #ffc107;
+      font-size: 0.9rem;
+    }
+    .review-date {
+      font-size: 0.7rem;
+      color: #aaa;
+    }
+    .review-patient {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .review-comment {
+      color: #555;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    /* Availability grid */
+    .availability-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    .day-card {
+      background: white;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+    .day-name {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .time-slots {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .status-available {
+      color: var(--success);
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+    .status-unavailable {
+      color: var(--danger);
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #aaa;
+    }
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+    .empty-state p {
+      font-size: 0.9rem;
+    }
+
+    /* Search bar for patients */
+    .patient-search {
+      margin-bottom: 20px;
+    }
+    .patient-search input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #dee2e6;
+      border-radius: 30px;
+      font-size: 0.9rem;
+    }
+
+    /* Availability editor (hidden by default) */
+    #availabilityEditor {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 16px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding-top: 100px; }
+      .auth-bar .container { justify-content: center; }
+      .doctors-section { padding: 20px 0 40px; }
+      .page-header h1 { font-size: 2rem; }
+      .chat-window { width: 90%; height: 80%; }
+      .appointment-window, .auth-window { width: 90%; }
+      .doctor-profile-card { flex-direction: column; text-align: center; }
+      .profile-stats { justify-content: center; }
+      .dashboard-tabs { gap: 15px; }
+    }
+
+    /* ========== ANIMATED BACKGROUND FOR WHITE AREAS ========== */
+
+/* Main page background with animated gradient */
+body {
+  background: linear-gradient(135deg, 
+    rgba(245, 247, 250, 0.95) 0%,
+    rgba(227, 242, 253, 0.95) 50%,
+    rgba(232, 245, 233, 0.95) 100%);
+  position: relative;
+}
+
+/* Animated gradient overlay that moves slowly */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 50%, rgba(44, 90, 160, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(0, 188, 212, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 40% 20%, rgba(76, 175, 80, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  animation: slowDrift 20s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes slowDrift {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Floating particles animation */
+.particle-bg {
+  position: fixed;
+  width: 3px;
+  height: 3px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: particleFloat 15s linear infinite;
+  z-index: 0;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(100vh) translateX(0) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  80% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-100px) translateX(50px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Soft glowing orbs background */
+.glow-orb-bg {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: orbFloat 25s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes orbFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  33% {
+    transform: translate(5%, 3%) scale(1.1);
+    opacity: 0.5;
+  }
+  66% {
+    transform: translate(-3%, 5%) scale(0.9);
+    opacity: 0.4;
+  }
+}
+
+/* Filter section with glass morphism and gradient border */
+.filter-section {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.filter-section:hover {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 32px rgba(44, 90, 160, 0.1);
+}
+
+/* Doctor cards with gradient overlay on hover */
+.doctor-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.doctor-card:hover {
+  background: rgba(255, 255, 255, 0.98);
+  transform: translateY(-12px);
+  box-shadow: 0 25px 45px rgba(44, 90, 160, 0.15);
+}
+
+.doctor-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent 0%, rgba(44, 90, 160, 0.03) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.doctor-card:hover::after {
+  opacity: 1;
+}
+
+/* Dashboard profile card with animated gradient border */
+.doctor-profile-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.doctor-profile-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, var(--primary), var(--accent), var(--primary));
+  border-radius: 22px;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.5s ease;
+  animation: borderRotate 3s linear infinite;
+}
+
+.doctor-profile-card:hover::before {
+  opacity: 0.5;
+}
+
+@keyframes borderRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dashboard cards with subtle gradient */
+.dashboard-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    transparent 0%,
+    rgba(44, 90, 160, 0.02) 25%,
+    rgba(0, 188, 212, 0.02) 50%,
+    rgba(44, 90, 160, 0.02) 75%,
+    transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.8s ease;
+  pointer-events: none;
+}
+
+.dashboard-card:hover::after {
+  transform: translateX(100%);
+}
+
+/* Appointment cards with soft gradient */
+.appointment-card {
+  background: rgba(255, 255, 255, 0.98);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.appointment-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.appointment-card:hover::before {
+  transform: scaleY(1);
+}
+
+/* Patient cards with hover effect */
+.patient-card {
+  background: rgba(255, 255, 255, 0.98);
+  transition: all 0.3s ease;
+}
+
+.patient-card:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(8px);
+  box-shadow: 0 5px 20px rgba(44, 90, 160, 0.1);
+}
+
+/* Review cards with subtle animation */
+.review-item-card {
+  background: rgba(255, 255, 255, 0.98);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.review-item-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(44, 90, 160, 0.1);
+  background: white;
+}
+
+/* Day cards with gradient on hover */
+.day-card {
+  background: rgba(255, 255, 255, 0.98);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.day-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.day-card:hover::after {
+  transform: scaleX(1);
+}
+
+.day-card:hover {
+  transform: translateY(-5px);
+  background: white;
+}
+
+/* Stat badges with pulse on hover */
+.stat-item {
+  transition: all 0.3s ease;
+  background: rgba(44, 90, 160, 0.08);
+}
+
+.stat-item:hover {
+  background: linear-gradient(135deg, rgba(44, 90, 160, 0.15), rgba(0, 188, 212, 0.15));
+  transform: scale(1.05);
+}
+
+/* Dashboard tabs with animated indicator */
+.dashboard-tab {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.dashboard-tab::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: width 0.3s ease;
+}
+
+.dashboard-tab:hover::after {
+  width: 100%;
+}
+
+.dashboard-tab.active::after {
+  width: 100%;
+  background: var(--primary);
+}
+
+/* Search input with glow effect */
+.search-box input {
+  background: rgba(255, 255, 255, 0.95);
+  transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+  background: white;
+  box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1), 0 5px 15px rgba(44, 90, 160, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Filter tags with animated background */
+.filter-tag {
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  overflow: hidden;
+}
+
+.filter-tag::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s, height 0.5s;
+}
+
+.filter-tag:active::before {
+  width: 200px;
+  height: 200px;
+}
+
+/* Buttons with gradient animation */
+.btn-chat, .btn-book, .btn-view-reviews, .btn-chat-sm {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-chat:hover, .btn-book:hover, .btn-view-reviews:hover, .btn-chat-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(44, 90, 160, 0.25);
+}
+
+/* Page header with floating effect */
+.page-header h1 {
+  background: linear-gradient(135deg, var(--primary), var(--accent), var(--primary));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 5s ease infinite;
+  position: relative;
+  display: inline-block;
+}
+
+.page-header h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 3px;
+  animation: underlinePulse 2s ease-in-out infinite;
+}
+
+@keyframes underlinePulse {
+  0%, 100% {
+    width: 60px;
+    opacity: 0.5;
+  }
+  50% {
+    width: 100px;
+    opacity: 1;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Page header subtitle with fade animation */
+.page-header p {
+  animation: fadeInUp 0.8s ease;
+  position: relative;
+}
+
+/* Empty state with bounce icon */
+.empty-state i {
+  animation: gentleBounce 2s ease-in-out infinite;
+}
+
+@keyframes gentleBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Custom scrollbar with gradient */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+}
+
+/* Loading animation for cards */
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctor-card, .appointment-card, .patient-card, .review-item-card, .day-card {
+  animation: cardAppear 0.5s ease backwards;
+  animation-delay: calc(var(--card-index, 0) * 0.05s);
+}
+
+/* Smooth hover transitions for all interactive elements */
+.doctor-card, .appointment-card, .patient-card, .review-item-card, .day-card, .filter-tag, .btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+  /* Modal Styles */
+  .appointment-modal, .review-modal, .reviews-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 15000;
+    justify-content: center;
+    align-items: center;
+  }
+  .appointment-modal.active, .review-modal.active, .reviews-modal.active {
+    display: flex;
+  }
+  .appointment-window, .review-window, .reviews-window {
+    width: 500px;
+    max-width: 90%;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+  }
+  .appointment-header, .review-header, .reviews-header {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    padding: 20px;
+  }
+  .appointment-body, .review-body, .reviews-body {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .time-slot {
+    padding: 8px 15px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .time-slot:hover, .time-slot.selected {
+    background: var(--primary);
+    color: white;
+  }
+  .btn-book-now {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .star-rating {
+    font-size: 2rem;
+    color: #ffc107;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .star-rating .star {
+    transition: color 0.2s;
+    padding: 0 2px;
+  }
+  .review-item {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+  }
+  .review-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .review-item-rating {
+    color: #ffc107;
+  }
+  .review-item-date {
+    color: #999;
+    font-size: 0.8rem;
+  }
+  .review-item-patient {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+  }
+  .review-item-comment {
+    color: #555;
+    line-height: 1.6;
+  }
+
+  /* ============================================================
+     CLAYMORPHISM ENHANCEMENTS — doctors.html
+     Only visual CSS. All Supabase/logic untouched.
+     ============================================================ */
+  :root {
+    --clay-light: #f4f9ff;
+    --clay-shadow-out:
+      8px 8px 20px 0 #afc3db,
+      inset -6px -6px 14px 0 #b5c9e1,
+      inset  6px  6px 14px 0 #ffffff;
+    --clay-shadow-sm:
+      5px 5px 12px 0 #afc3db,
+      inset -4px -4px 10px 0 #b5c9e1,
+      inset  4px  4px 10px 0 #ffffff;
+    --clay-shadow-primary:
+      5px 5px 14px 0 #7a9fc8,
+      inset -5px -5px 12px 0 #1a3870,
+      inset  5px  5px 12px 0 #60a0e0;
+  }
+  body { background: linear-gradient(145deg, #eaf3ff 0%, #ddeeff 55%, #e8f7f2 100%) !important; }
+
+  /* Navbar */
+  .navbar { background: rgba(234,243,255,0.97) !important; backdrop-filter: blur(14px); box-shadow: 0 4px 18px rgba(100,140,200,0.18), inset 0 -2px 6px rgba(255,255,255,0.7) !important; border-bottom: 1.5px solid rgba(255,255,255,0.8); }
+  .nav-link { border-radius: 30px; padding: 5px 14px !important; transition: all 0.25s ease; }
+  .nav-link:hover, .nav-link.active { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white !important; box-shadow: var(--clay-shadow-primary); transform: translateY(-2px); }
+
+  /* Auth bar */
+  .auth-bar { background: rgba(234,243,255,0.85); backdrop-filter: blur(8px); border-radius: 0 0 20px 20px; box-shadow: 0 4px 12px rgba(100,140,200,0.12); }
+
+  /* Filter section */
+  .filter-section { background: var(--clay-light) !important; border-radius: 24px !important; box-shadow: var(--clay-shadow-out) !important; border: none !important; backdrop-filter: none !important; }
+  .search-box input { background: var(--clay-light); border: none !important; border-radius: 40px !important; box-shadow: inset 4px 4px 10px #b5c9e1, inset -4px -4px 10px #ffffff !important; transition: all 0.3s ease; }
+  .search-box input:focus { box-shadow: inset 4px 4px 10px #a8bdd6, inset -4px -4px 10px #ffffff, 0 0 0 3px rgba(44,90,160,0.12) !important; transform: translateY(-2px); }
+
+  /* Filter tags */
+  .filter-tag { background: var(--clay-light) !important; border-radius: 30px !important; box-shadow: var(--clay-shadow-sm) !important; border: none; font-weight: 500; transition: all 0.3s cubic-bezier(0.68,-0.55,0.265,1.55); }
+  .filter-tag:hover, .filter-tag.active { background: linear-gradient(135deg, var(--primary), var(--accent)) !important; color: white !important; box-shadow: var(--clay-shadow-primary) !important; transform: translateY(-2px) scale(1.05); }
+
+  /* Doctor cards */
+  .doctor-card { background: var(--clay-light) !important; border-radius: 28px !important; box-shadow: var(--clay-shadow-out) !important; border: none; backdrop-filter: none !important; overflow: hidden !important; }
+  .doctor-card:hover { transform: translateY(-14px) scale(1.02) !important; box-shadow: 12px 12px 32px 0 #9ab5d4, inset -8px -8px 18px 0 #b0c8e8, inset 8px 8px 18px 0 #ffffff !important; }
+  .doctor-image { border-radius: 24px 24px 0 0 !important; }
+  .doctor-info { background: var(--clay-light); border-radius: 0 0 28px 28px; }
+  .btn-chat { border-radius: 20px !important; box-shadow: var(--clay-shadow-primary) !important; font-weight: 600; transition: all 0.25s ease; }
+  .btn-chat:hover { transform: translateY(-3px) !important; box-shadow: 6px 6px 18px 0 #7a9fc8, inset -4px -4px 10px 0 #1a3870, inset 4px 4px 10px 0 #80c0f0 !important; }
+  .btn-book { border-radius: 20px !important; background: var(--clay-light) !important; box-shadow: var(--clay-shadow-sm) !important; font-weight: 600; border: 2px solid var(--primary) !important; transition: all 0.25s ease; }
+  .btn-book:hover { background: var(--primary) !important; color: white !important; transform: translateY(-3px) !important; box-shadow: var(--clay-shadow-primary) !important; }
+  .btn-view-reviews { border-radius: 20px !important; background: var(--clay-light) !important; box-shadow: var(--clay-shadow-sm) !important; transition: all 0.25s ease; }
+  .btn-view-reviews:hover { background: var(--primary) !important; color: white !important; transform: translateY(-2px) !important; box-shadow: var(--clay-shadow-primary) !important; }
+
+  /* Dashboard profile card */
+  .doctor-profile-card { background: var(--clay-light) !important; border-radius: 32px !important; box-shadow: var(--clay-shadow-out) !important; border: none; overflow: visible !important; padding: 28px !important; margin-bottom: 28px !important; transition: all 0.3s ease; }
+  .doctor-profile-card:hover { box-shadow: 12px 12px 30px 0 #9ab5d4, inset -6px -6px 16px 0 #b0c8e8, inset 6px 6px 16px 0 #ffffff !important; transform: translateY(-3px); }
+  .doctor-profile-card::before, .doctor-profile-card::after { display: none !important; }
+
+  /* Profile pic */
+  .profile-pic { border: none !important; box-shadow: 6px 6px 16px 0 #9ab5d4, inset -4px -4px 10px 0 #b5c9e1, inset 4px 4px 10px 0 #ffffff !important; border-radius: 50% !important; padding: 4px; background: var(--clay-light) !important; }
+
+  /* Stat badges */
+  .stat-item { background: var(--clay-light) !important; border-radius: 30px !important; box-shadow: var(--clay-shadow-sm) !important; padding: 6px 16px !important; font-weight: 600; color: var(--primary) !important; transition: all 0.25s ease; }
+  .stat-item:hover { transform: scale(1.06) !important; box-shadow: 6px 6px 16px 0 #9ab5d4, inset -4px -4px 10px 0 #b5c9e1, inset 4px 4px 10px 0 #ffffff !important; }
+
+  /* Dashboard tabs */
+  .dashboard-tabs { background: var(--clay-light); border-radius: 20px; padding: 8px 12px; box-shadow: var(--clay-shadow-sm); border-bottom: none !important; gap: 8px !important; margin-bottom: 22px !important; }
+  .dashboard-tab { border-radius: 16px !important; padding: 10px 18px !important; font-weight: 600; border-bottom: none !important; color: #6c757d; transition: all 0.25s ease; margin-bottom: 0 !important; }
+  .dashboard-tab:hover:not(.active) { background: rgba(44,90,160,0.07); color: var(--primary); transform: translateY(-2px); }
+  .dashboard-tab.active { background: linear-gradient(135deg, var(--primary), var(--accent)) !important; color: white !important; box-shadow: var(--clay-shadow-primary) !important; border-bottom-color: transparent !important; }
+  .dashboard-tab::before, .dashboard-tab::after { display: none !important; }
+
+  /* Dashboard cards */
+  .dashboard-card { background: var(--clay-light) !important; border-radius: 28px !important; box-shadow: var(--clay-shadow-out) !important; padding: 24px !important; backdrop-filter: none !important; overflow: visible !important; transition: all 0.3s ease; }
+  .dashboard-card::after { display: none !important; }
+  .dashboard-card h4 { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: 'Righteous', cursive; font-size: 1.25rem !important; }
+
+  /* Appointment cards */
+  .appointment-card { background: var(--clay-light) !important; border-radius: 20px !important; box-shadow: var(--clay-shadow-sm) !important; border: none; padding: 18px !important; overflow: visible !important; transition: all 0.3s ease !important; }
+  .appointment-card:hover { transform: translateY(-4px) !important; box-shadow: 8px 8px 22px 0 #9ab5d4, inset -5px -5px 12px 0 #b5c9e1, inset 5px 5px 12px 0 #ffffff !important; }
+  .appointment-card::before { display: none !important; }
+  .badge-confirmed { background: var(--clay-light); box-shadow: 3px 3px 8px 0 #b8d4b8, inset -2px -2px 6px 0 #c0dcc0, inset 2px 2px 6px 0 #ffffff; color: #2e7d32; border-radius: 20px; font-weight: 700; }
+  .btn-chat-sm { border-radius: 20px !important; box-shadow: var(--clay-shadow-primary) !important; font-weight: 600; transition: all 0.25s ease; }
+  .btn-chat-sm:hover { transform: translateY(-2px) !important; }
+  .btn-cancel { border-radius: 20px !important; background: var(--clay-light) !important; box-shadow: var(--clay-shadow-sm) !important; transition: all 0.25s ease; }
+  .btn-cancel:hover { background: #dc3545 !important; color: white !important; transform: translateY(-2px) !important; }
+
+  /* Patient cards */
+  .patient-card { background: var(--clay-light) !important; border-radius: 20px !important; box-shadow: var(--clay-shadow-sm) !important; border: none; transition: all 0.3s ease !important; }
+  .patient-card:hover { transform: translateX(6px) !important; box-shadow: 6px 6px 18px 0 #9ab5d4, inset -4px -4px 10px 0 #b5c9e1, inset 4px 4px 10px 0 #ffffff !important; }
+  .patient-avatar { box-shadow: 3px 3px 8px 0 #9ab5d4, inset -2px -2px 6px 0 #1a3870, inset 2px 2px 6px 0 #60a0e0; border-radius: 50%; }
+  .patient-search input { background: var(--clay-light); border: none !important; border-radius: 40px !important; box-shadow: inset 4px 4px 10px #b5c9e1, inset -4px -4px 10px #ffffff !important; transition: all 0.3s ease; }
+
+  /* Review cards */
+  .review-item-card { background: var(--clay-light) !important; border-radius: 20px !important; box-shadow: var(--clay-shadow-sm) !important; border: none; transition: all 0.3s ease !important; }
+  .review-item-card:hover { transform: translateY(-4px) !important; box-shadow: 8px 8px 20px 0 #9ab5d4, inset -5px -5px 12px 0 #b5c9e1, inset 5px 5px 12px 0 #ffffff !important; }
+
+  /* Day cards */
+  .day-card { background: var(--clay-light) !important; border-radius: 18px !important; box-shadow: var(--clay-shadow-sm) !important; border: none; overflow: visible !important; transition: all 0.3s ease !important; }
+  .day-card:hover { transform: translateY(-6px) scale(1.03) !important; box-shadow: 8px 8px 22px 0 #9ab5d4, inset -5px -5px 12px 0 #b5c9e1, inset 5px 5px 12px 0 #ffffff !important; }
+  .day-card::after { display: none !important; }
+  #availabilityEditor { background: var(--clay-light) !important; border-radius: 20px !important; box-shadow: inset 4px 4px 10px #b5c9e1, inset -4px -4px 10px #ffffff !important; }
+
+  /* Buttons */
+  .btn.btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)) !important; border: none !important; border-radius: 30px !important; box-shadow: var(--clay-shadow-primary) !important; font-weight: 600; transition: all 0.25s ease; }
+  .btn.btn-primary:hover { transform: translateY(-3px) !important; }
+  .btn.btn-secondary { border-radius: 30px !important; box-shadow: var(--clay-shadow-sm) !important; font-weight: 600; }
+  .btn.btn-success { border-radius: 30px !important; }
+  .btn.btn-outline-primary { border-radius: 30px !important; box-shadow: var(--clay-shadow-sm) !important; border-width: 2px !important; font-weight: 600; }
+  .btn.btn-outline-danger { border-radius: 30px !important; box-shadow: var(--clay-shadow-sm) !important; border-width: 2px !important; font-weight: 600; }
+
+  /* Chat window */
+  .chat-window { border-radius: 28px !important; box-shadow: 12px 12px 28px 0 #9ab5d4, inset -6px -6px 14px 0 #b5c9e1, inset 6px 6px 14px 0 #ffffff !important; background: var(--clay-light) !important; }
+  .chat-messages { background: #eef5ff !important; }
+  .patient .message-bubble { background: var(--clay-light) !important; box-shadow: 2px 2px 6px 0 #b5c9e1, inset -1px -1px 4px 0 #c8daf0, inset 1px 1px 4px 0 #ffffff; color: #333 !important; }
+  .chat-input-area input { background: var(--clay-light) !important; border: none !important; border-radius: 40px !important; box-shadow: inset 3px 3px 8px #b5c9e1, inset -3px -3px 8px #ffffff !important; }
+  .chat-input-area button { box-shadow: var(--clay-shadow-primary) !important; border-radius: 50% !important; }
+
+  /* Modals */
+  .appointment-window, .review-window, .reviews-window { border-radius: 28px !important; box-shadow: 14px 14px 30px 0 #9ab5d4, inset -6px -6px 14px 0 #b5c9e1, inset 6px 6px 14px 0 #ffffff !important; background: var(--clay-light) !important; }
+  .appointment-body, .review-body, .reviews-body { background: var(--clay-light); }
+
+  /* Time slots */
+  .time-slot { background: var(--clay-light) !important; border-radius: 14px !important; box-shadow: var(--clay-shadow-sm) !important; border: none; font-weight: 500; transition: all 0.25s ease; }
+  .time-slot:hover, .time-slot.selected { background: linear-gradient(135deg, var(--primary), var(--accent)) !important; color: white !important; box-shadow: var(--clay-shadow-primary) !important; transform: translateY(-2px); }
+  .btn-book-now { border-radius: 30px !important; box-shadow: var(--clay-shadow-primary) !important; font-weight: 700; }
+
+  </style>
+</head>
+
+<body>
+  <!-- Floating Background Elements -->
+  <div class="floating-elements">
+    <div class="floating-element element-1">🫁</div>
+    <div class="floating-element element-2">❤️</div>
+    <div class="floating-element element-3">🌬️</div>
+    <div class="floating-element element-4">💙</div>
+    <div class="floating-element element-5">🩺</div>
+  </div>
+
+  <!-- Main Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <span class="brand-icon">🩺</span>
+        <span class="brand-text">AUSCURA</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#diseases">Diseases</a></li>
+          <li class="nav-item"><a class="nav-link" href="upload.html">Analyze</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link active" href="doctors.html">Consult a Doctor</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Auth Bar -->
+  <div class="auth-bar">
+    <div class="container">
+      <div id="authButtons">
+        <button class="btn btn-outline-primary" id="loginBtn">Login</button>
+        <button class="btn btn-primary" id="registerBtn">Register</button>
+      </div>
+      <div id="userInfo" style="display: none;">
+        <span class="user-greeting" id="userNameDisplay"></span>
+        <button class="btn btn-outline-danger btn-sm" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCTORS SECTION -->
+  <section class="doctors-section">
+    <div class="container">
+      <div class="page-header">
+        <h1>Consult a Lung Specialist</h1>
+        <p>Connect with top respiratory doctors for expert advice and consultation</p>
+      </div>
+
+      <div class="filter-section" id="filterSection">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchDoctor" placeholder="Search by doctor name, specialty, or hospital...">
+        </div>
+        <div class="filter-tags">
+          <span class="filter-tag active" onclick="filterDoctors('all')">All</span>
+          <span class="filter-tag" onclick="filterDoctors('pulmonologist')">Pulmonologist</span>
+          <span class="filter-tag" onclick="filterDoctors('respiratory')">Respiratory Specialist</span>
+          <span class="filter-tag" onclick="filterDoctors('critical')">Critical Care</span>
+          <span class="filter-tag" onclick="filterDoctors('pediatric')">Pediatric Pulmonologist</span>
+          <span class="filter-tag" onclick="filterDoctors('available')">Available Now</span>
+        </div>
+      </div>
+
+      <div class="row g-4" id="doctorsGrid"></div>
+
+      <!-- Doctor Dashboard (enhanced) -->
+      <div id="doctorDashboard" style="display: none;">
+        <!-- Profile Card -->
+        <div class="doctor-profile-card">
+          <div class="profile-pic" id="profilePic">
+            <img id="profileImg" src="" alt="Profile">
+            <div class="upload-overlay" id="uploadProfileBtn">
+              <i class="fas fa-camera"></i> Change
+            </div>
+            <input type="file" id="profileUploadInput" accept="image/*" style="display: none;">
+          </div>
+          <div class="profile-info">
+            <h3 id="dashboardDoctorNameFull"></h3>
+            <p id="dashboardDoctorSpecialty"></p>
+            <div class="profile-stats">
+              <span class="stat-item"><i class="fas fa-calendar-alt"></i> <span id="statAppointments">0</span> Appointments</span>
+              <span class="stat-item"><i class="fas fa-users"></i> <span id="statPatients">0</span> Patients</span>
+              <span class="stat-item"><i class="fas fa-star"></i> <span id="statRating">0.0</span> ★</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Tabs -->
+        <div class="dashboard-tabs">
+          <div class="dashboard-tab active" data-tab="appointments"><i class="fas fa-calendar-check"></i> Appointments</div>
+          <div class="dashboard-tab" data-tab="patients"><i class="fas fa-users"></i> My Patients</div>
+          <div class="dashboard-tab" data-tab="reviews"><i class="fas fa-star"></i> My Reviews</div>
+          <div class="dashboard-tab" data-tab="availability"><i class="fas fa-clock"></i> Availability</div>
+        </div>
+
+        <!-- Tab Panels -->
+        <div id="tabAppointments" class="dashboard-card">
+          <h4><i class="fas fa-calendar-alt me-2"></i> Upcoming Appointments</h4>
+          <div id="appointmentsList"></div>
+        </div>
+        <div id="tabPatients" class="dashboard-card" style="display: none;">
+          <h4><i class="fas fa-users me-2"></i> Your Patients</h4>
+          <div class="patient-search">
+            <input type="text" id="patientSearchInput" placeholder="Search by name or email...">
+          </div>
+          <div id="dashboardPatientList"></div>
+        </div>
+        <div id="tabReviews" class="dashboard-card" style="display: none;">
+          <h4><i class="fas fa-star me-2"></i> Patient Reviews</h4>
+          <div id="dashboardReviewsList"></div>
+        </div>
+        <div id="tabAvailability" class="dashboard-card" style="display: none;">
+          <h4><i class="fas fa-clock me-2"></i> Weekly Schedule</h4>
+          <div id="availabilityGrid"></div>
+          <div class="mt-3">
+            <button class="btn btn-primary" id="editAvailabilityBtn">Edit Availability</button>
+          </div>
+          <div id="availabilityEditor">
+            <div id="availabilityForm"></div>
+            <div class="mt-2">
+              <button class="btn btn-success" id="saveAvailabilityBtn">Save Changes</button>
+              <button class="btn btn-secondary" id="cancelAvailabilityBtn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Chat Modal -->
+  <div class="chat-modal" id="chatModal">
+    <div class="chat-window">
+      <div class="chat-header">
+        <h5 id="chatDoctorName">Chat</h5>
+        <i class="fas fa-times" onclick="closeChat()"></i>
+      </div>
+      <!-- Patient list view (for doctors) -->
+      <div id="patientListView">
+        <button class="btn btn-sm btn-secondary mb-2" onclick="showChatView()">Back</button>
+        <h6>Your Patients</h6>
+        <ul id="patientList" class="list-group" style="margin-top: 10px;"></ul>
+      </div>
+      <!-- Chat messages view -->
+      <div id="chatView" style="display: none;">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+          <input type="text" id="chatInput" placeholder="Type your message...">
+          <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Modal Styles -->
+  <style>
+    .chat-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+    }
+    .chat-modal.active {
+      display: flex;
+    }
+    .chat-window {
+      width: 400px;
+      height: 600px;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s ease;
+    }
+    .chat-header {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-header h5 {
+      margin: 0;
+      font-weight: 600;
+    }
+    .chat-header i {
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    .chat-header i:hover {
+      transform: scale(1.1);
+    }
+    #patientListView {
+      display: none;
+      padding: 10px;
+      overflow-y: auto;
+      height: 500px;
+    }
+    #patientListView .list-group-item {
+      cursor: pointer;
+    }
+    #patientListView .list-group-item:hover {
+      background-color: #f8f9fa;
+    }
+    #chatView {
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-message {
+      margin-bottom: 15px;
+      max-width: 80%;
+    }
+    .chat-message.doctor {
+      align-self: flex-start;
+    }
+    .chat-message.patient {
+      align-self: flex-end;
+      margin-left: auto;
+    }
+    .message-bubble {
+      padding: 10px 15px;
+      border-radius: 15px;
+      font-size: 0.9rem;
+    }
+    .doctor .message-bubble {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border-bottom-left-radius: 5px;
+    }
+    .patient .message-bubble {
+      background: #e9ecef;
+      color: #333;
+      border-bottom-right-radius: 5px;
+    }
+    .chat-input-area {
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #dee2e6;
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input-area input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #dee2e6;
+      border-radius: 25px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    .chat-input-area input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(44,90,160,0.1);
+    }
+    .chat-input-area button {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .chat-input-area button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(44,90,160,0.3);
+    }
+  </style>
+
+    <!-- Auth Modal (Neumorphic Sliding Design) -->
+  <div class="auth-modal" id="authModal">
+    <div class="auth-neu-close" onclick="closeAuthModal()"><i class="fas fa-times"></i></div>
+
+    <div class="neu-container" id="neuContainer">
+
+      <!-- ===== SIGN IN PANEL ===== -->
+      <div class="neu-form-container neu-sign-in-container">
+        <div class="neu-inner">
+          <!-- User type tabs -->
+          <div class="neu-type-tabs">
+            <button class="neu-type-tab active" id="loginTabPatient" onclick="switchNeuTab('patient','login')">Patient</button>
+            <button class="neu-type-tab" id="loginTabDoctor" onclick="switchNeuTab('doctor','login')">Doctor</button>
+          </div>
+          <div class="neu-logo"><i class="fas fa-stethoscope"></i></div>
+          <h2>Sign In</h2>
+          <div class="neu-input-group">
+            <input type="email" id="loginEmail" placeholder="Email" />
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="neu-input-group">
+            <input type="password" id="loginPassword" placeholder="Password" />
+            <i class="fas fa-lock"></i>
+          </div>
+          <div id="authStatus" class="neu-status" style="display:none;"></div>
+          <button class="neu-btn" onclick="login()">Sign In</button>
+          <div class="neu-mobile-toggle" onclick="neuToggleMobile()">Don't have an account? <strong>Sign Up</strong></div>
+        </div>
+      </div>
+
+      <!-- ===== SIGN UP PANEL ===== -->
+      <div class="neu-form-container neu-sign-up-container">
+        <div class="neu-inner neu-scrollable">
+          <!-- User type tabs -->
+          <div class="neu-type-tabs">
+            <button class="neu-type-tab active" id="registerTabPatient" onclick="switchNeuTab('patient','register')">Patient</button>
+            <button class="neu-type-tab" id="registerTabDoctor" onclick="switchNeuTab('doctor','register')">Doctor</button>
+          </div>
+          <h2>Create Account</h2>
+
+          <!-- Patient Register Fields -->
+          <div id="registerPatientFields">
+            <div class="neu-input-group">
+              <input type="text" id="regPatientName" placeholder="Full Name" />
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="email" id="regPatientEmail" placeholder="Email" />
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="tel" id="regPatientPhone" placeholder="Phone Number" />
+              <i class="fas fa-phone"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="password" id="regPatientPassword" placeholder="Create Password" />
+              <i class="fas fa-lock"></i>
+            </div>
+            <button class="neu-btn" onclick="registerPatient()">Register as Patient</button>
+          </div>
+
+          <!-- Doctor Register Fields -->
+          <div id="registerDoctorFields" style="display:none;">
+            <div class="neu-input-group">
+              <input type="text" id="regDoctorName" placeholder="Dr. Full Name" />
+              <i class="fas fa-user-md"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="email" id="regDoctorEmail" placeholder="Email" />
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="tel" id="regDoctorPhone" placeholder="Phone Number" />
+              <i class="fas fa-phone"></i>
+            </div>
+            <div class="neu-input-group">
+              <select id="regDoctorSpecialty">
+                <option value="" disabled selected>Select Specialty</option>
+                <option value="Pulmonologist">Pulmonologist</option>
+                <option value="Respiratory Specialist">Respiratory Specialist</option>
+                <option value="Critical Care Specialist">Critical Care Specialist</option>
+                <option value="Pediatric Pulmonologist">Pediatric Pulmonologist</option>
+              </select>
+              <i class="fas fa-briefcase-medical"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="text" id="regDoctorQualification" placeholder="Qualifications (e.g. MD, DNB)" />
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="number" id="regDoctorExperience" placeholder="Years of Experience" />
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="text" id="regDoctorHospital" placeholder="Hospital / Clinic Name" />
+              <i class="fas fa-hospital"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="text" id="regDoctorFee" placeholder="Consultation Fee (₹)" />
+              <i class="fas fa-rupee-sign"></i>
+            </div>
+            <div class="neu-input-group">
+              <input type="text" id="regDoctorLanguages" placeholder="Languages (e.g. English, Hindi)" />
+              <i class="fas fa-language"></i>
+            </div>
+            <div class="neu-input-group neu-file-group">
+              <label class="neu-file-label">
+                <i class="fas fa-camera"></i> Profile Photo (optional)
+                <input type="file" id="regDoctorImage" accept="image/*" />
+              </label>
+            </div>
+            <div class="neu-input-group">
+              <input type="password" id="regDoctorPassword" placeholder="Create Password" />
+              <i class="fas fa-lock"></i>
+            </div>
+            <button class="neu-btn" onclick="registerDoctor()">Register as Doctor</button>
+          </div>
+
+          <div class="neu-mobile-toggle" onclick="neuToggleMobile()">Already have an account? <strong>Sign In</strong></div>
+        </div>
+      </div>
+
+      <!-- ===== OVERLAY SLIDING PANEL ===== -->
+      <div class="neu-overlay-container">
+        <div class="neu-overlay">
+          <div class="neu-overlay-panel neu-overlay-left">
+            <h1>Welcome Back!</h1>
+            <p>Sign in to book appointments and connect with your doctor</p>
+            <button class="neu-btn neu-ghost" id="neuSignIn">Sign In</button>
+          </div>
+          <div class="neu-overlay-panel neu-overlay-right">
+            <h1>Hello, Friend!</h1>
+            <p>Register as a patient or doctor and start your health journey</p>
+            <button class="neu-btn neu-ghost" id="neuSignUp">Sign Up</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /neu-container -->
+  </div>
+
+  <!-- Auth Modal Styles (Neumorphic) -->
+  <style>
+    /* ---- Overlay wrapper ---- */
+    .auth-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 20000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+    .auth-modal.active { display: flex; }
+
+    /* Close button floating above the card */
+    .auth-neu-close {
+      position: fixed;
+      top: 18px;
+      right: 22px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #d1e8ff;
+      box-shadow: 5px 5px 10px #a6b9cc, -5px -5px 10px #f0fbff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #334e68;
+      font-size: 16px;
+      z-index: 20100;
+      transition: all .2s;
+    }
+    .auth-neu-close:hover { color: #0077b6; }
+
+    /* ---- Neumorphic card ---- */
+    .neu-container {
+      --neu-bg: #d1e8ff;
+      --neu-light: #f0fbff;
+      --neu-dark: #a6b9cc;
+      --neu-accent: #0077b6;
+      --neu-text: #334e68;
+      --neu-muted: #70869d;
+
+      background: var(--neu-bg);
+      border-radius: 28px;
+      box-shadow: 10px 10px 20px var(--neu-dark), -10px -10px 20px var(--neu-light);
+      position: relative;
+      overflow: hidden;
+      width: 780px;
+      max-width: 100%;
+      min-height: 540px;
+      font-family: 'Poppins', sans-serif;
+      animation: slideUp 0.35s ease;
+    }
+
+    /* ---- Form containers ---- */
+    .neu-form-container {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      transition: all 0.6s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--neu-bg);
+    }
+    .neu-sign-in-container  { left: 0; width: 50%; z-index: 2; }
+    .neu-sign-up-container  { left: 0; width: 50%; opacity: 0; z-index: 1; }
+
+    .neu-container.right-panel-active .neu-sign-in-container {
+      transform: translateX(100%); opacity: 0;
+    }
+    .neu-container.right-panel-active .neu-sign-up-container {
+      transform: translateX(100%); opacity: 1; z-index: 5;
+      animation: neuShow 0.6s;
+    }
+    @keyframes neuShow {
+      0%,49.99%{ opacity:0; z-index:1; }
+      50%,100% { opacity:1; z-index:5; }
+    }
+
+    /* ---- Inner content ---- */
+    .neu-inner {
+      padding: 30px 35px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      color: var(--neu-text);
+    }
+    .neu-scrollable {
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      width: 100%;
+    }
+    .neu-inner h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--neu-text);
+      margin: 0;
+    }
+
+    /* ---- User-type tabs ---- */
+    .neu-type-tabs {
+      display: flex;
+      background: var(--neu-bg);
+      border-radius: 50px;
+      box-shadow: inset 4px 4px 8px var(--neu-dark), inset -4px -4px 8px var(--neu-light);
+      padding: 4px;
+      gap: 4px;
+      width: 100%;
+      max-width: 240px;
+    }
+    .neu-type-tab {
+      flex: 1;
+      border: none;
+      background: transparent;
+      border-radius: 50px;
+      padding: 7px 12px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: var(--neu-muted);
+      cursor: pointer;
+      transition: all .25s;
+    }
+    .neu-type-tab.active {
+      background: var(--neu-accent);
+      color: white;
+      box-shadow: 3px 3px 6px var(--neu-dark), -1px -1px 4px var(--neu-light);
+    }
+
+    /* ---- Logo icon ---- */
+    .neu-logo {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      color: var(--neu-accent);
+      box-shadow: 7px 7px 14px var(--neu-dark), -7px -7px 14px var(--neu-light);
+    }
+
+    /* ---- Inputs ---- */
+    .neu-input-group {
+      position: relative;
+      width: 100%;
+      text-align: left;
+    }
+    .neu-input-group input,
+    .neu-input-group select {
+      width: 100%;
+      padding: 11px 14px 11px 44px;
+      border: none;
+      border-radius: 50px;
+      background: var(--neu-bg);
+      color: var(--neu-text);
+      font-size: 0.88rem;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      box-shadow: inset 5px 5px 9px var(--neu-dark), inset -5px -5px 9px var(--neu-light);
+      transition: box-shadow .3s;
+      appearance: none;
+    }
+    .neu-input-group input::placeholder { color: var(--neu-muted); }
+    .neu-input-group input:focus,
+    .neu-input-group select:focus {
+      box-shadow: inset 3px 3px 7px var(--neu-dark), inset -3px -3px 7px var(--neu-light);
+    }
+    .neu-input-group > i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--neu-muted);
+      font-size: 13px;
+      pointer-events: none;
+      transition: color .3s;
+    }
+    .neu-input-group input:focus ~ i,
+    .neu-input-group select:focus ~ i { color: var(--neu-accent); }
+
+    /* File input */
+    .neu-file-group { margin-bottom: 2px; }
+    .neu-file-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 50px;
+      background: var(--neu-bg);
+      color: var(--neu-muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: inset 5px 5px 9px var(--neu-dark), inset -5px -5px 9px var(--neu-light);
+      width: 100%;
+    }
+    .neu-file-label input[type="file"] { display: none; }
+
+    /* ---- Buttons ---- */
+    .neu-btn {
+      border-radius: 50px;
+      border: none;
+      background: var(--neu-bg);
+      color: var(--neu-accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 11px 40px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 7px 7px 14px var(--neu-dark), -7px -7px 14px var(--neu-light);
+      transition: transform 80ms ease-in, box-shadow .2s;
+      font-family: 'Poppins', sans-serif;
+      margin-top: 4px;
+    }
+    .neu-btn:active {
+      transform: scale(0.96);
+      box-shadow: inset 5px 5px 9px rgba(0,0,0,.15), inset -3px -3px 6px rgba(255,255,255,.1);
+    }
+    .neu-btn:focus { outline: none; }
+    .neu-btn.neu-ghost {
+      background: transparent;
+      border: 1.5px solid white;
+      color: white;
+      box-shadow: none;
+    }
+    .neu-btn.neu-ghost:hover { background: rgba(255,255,255,0.12); }
+
+    /* ---- Status message ---- */
+    .neu-status {
+      width: 100%;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-align: center;
+      color: var(--neu-accent);
+      background: rgba(0,119,182,0.08);
+    }
+
+    /* ---- Mobile toggle link ---- */
+    .neu-mobile-toggle {
+      display: none;
+      margin-top: 10px;
+      font-size: 0.83rem;
+      color: var(--neu-muted);
+      cursor: pointer;
+    }
+    .neu-mobile-toggle strong { color: var(--neu-accent); }
+
+    /* ---- Overlay sliding panel ---- */
+    .neu-overlay-container {
+      position: absolute;
+      top: 0; left: 50%;
+      width: 50%; height: 100%;
+      overflow: hidden;
+      z-index: 100;
+      transition: transform .6s ease-in-out, border-radius .6s ease-in-out;
+      border-top-left-radius: 90px;
+      border-bottom-left-radius: 90px;
+    }
+    .neu-container.right-panel-active .neu-overlay-container {
+      transform: translateX(-100%);
+      border-top-left-radius: 0; border-bottom-left-radius: 0;
+      border-top-right-radius: 90px; border-bottom-right-radius: 90px;
+    }
+    .neu-overlay {
+      background: linear-gradient(135deg, #0077b6, #48cae4);
+      color: white;
+      position: relative;
+      left: -100%; height: 100%; width: 200%;
+      transform: translateX(0);
+      transition: transform .6s ease-in-out;
+    }
+    .neu-container.right-panel-active .neu-overlay { transform: translateX(50%); }
+    .neu-overlay-panel {
+      position: absolute;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 0 36px;
+      text-align: center;
+      top: 0; height: 100%; width: 50%;
+      gap: 14px;
+    }
+    .neu-overlay-panel h1 { font-size: 1.5rem; font-weight: 700; margin: 0; }
+    .neu-overlay-panel p  { font-size: 0.84rem; opacity: .85; margin: 0; line-height: 1.5; }
+    .neu-overlay-left  { transform: translateX(-20%); transition: transform .6s ease-in-out; }
+    .neu-overlay-right { right: 0; transform: translateX(0); transition: transform .6s ease-in-out; }
+    .neu-container.right-panel-active .neu-overlay-left  { transform: translateX(0); }
+    .neu-container.right-panel-active .neu-overlay-right { transform: translateX(20%); }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 600px) {
+      .neu-container {
+        min-height: unset;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        border-radius: 20px;
+      }
+      .neu-form-container {
+        position: relative;
+        width: 100%;
+        opacity: 1 !important;
+        transform: none !important;
+        left: auto; top: auto;
+      }
+      .neu-sign-up-container { display: none; }
+      .neu-container.right-panel-active .neu-sign-up-container { display: flex; }
+      .neu-container.right-panel-active .neu-sign-in-container  { display: none; }
+      .neu-overlay-container { display: none; }
+      .neu-mobile-toggle { display: block; }
+    }
+  </style>
+
+    <!-- Appointment Modal -->
+  <div class="appointment-modal" id="appointmentModal">
+    <div class="appointment-window">
+      <div class="appointment-header">
+        <h4 id="appointmentDoctorName">Book Appointment</h4>
+        <p id="appointmentDoctorSpecialty">Pulmonologist</p>
+      </div>
+      <div class="appointment-body">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="patientName" class="form-control" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label>Your Email</label>
+          <input type="email" id="patientEmail" class="form-control" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+          <label>Your Phone</label>
+          <input type="tel" id="patientPhone" class="form-control" placeholder="Enter your phone number">
+        </div>
+        <div class="form-group">
+          <label>Appointment Date</label>
+          <input type="date" id="appointmentDate" class="form-control" onchange="loadSlotsForDate()">
+        </div>
+        <div class="form-group">
+          <label>Preferred Time</label>
+          <div class="time-slots" id="timeSlotsContainer"></div>
+        </div>
+        <div class="form-group">
+          <label>Reason for Visit</label>
+          <textarea id="appointmentReason" class="form-control" rows="3" placeholder="Briefly describe your symptoms or reason for consultation"></textarea>
+        </div>
+        <button class="btn-book-now" onclick="bookAppointment()">Confirm Appointment</button>
+        <button class="btn btn-link mt-2" onclick="closeAppointment()" style="color: #666;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Write Review Modal -->
+  <div class="review-modal" id="reviewModal">
+    <div class="review-window">
+      <div class="review-header">
+        <h4 id="reviewDoctorName">Review Dr. Name</h4>
+        <i class="fas fa-times" onclick="closeReviewModal()"></i>
+      </div>
+      <div class="review-body">
+        <div class="form-group">
+          <label>Rating</label>
+          <div class="star-rating" id="starRating">
+            <span class="star" data-rating="1">☆</span>
+            <span class="star" data-rating="2">☆</span>
+            <span class="star" data-rating="3">☆</span>
+            <span class="star" data-rating="4">☆</span>
+            <span class="star" data-rating="5">☆</span>
+          </div>
+          <input type="hidden" id="reviewRating" value="0">
+        </div>
+        <div class="form-group">
+          <label>Your Review</label>
+          <textarea id="reviewComment" class="form-control" rows="4" placeholder="Share your experience with this doctor..."></textarea>
+        </div>
+        <button class="btn btn-primary w-100" onclick="submitReview()">Submit Review</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Reviews Modal -->
+  <div class="reviews-modal" id="reviewsModal">
+    <div class="reviews-window">
+      <div class="reviews-header">
+        <h4 id="reviewsDoctorName">Reviews</h4>
+        <i class="fas fa-times" onclick="closeReviewsModal()"></i>
+      </div>
+      <div class="reviews-body" id="reviewsList">
+        <p class="no-reviews">Loading reviews...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-4">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <span class="brand-icon">🩺</span>
+          <span class="brand-text">AUSCURA</span>
+        </div>
+        <p class="footer-tagline">Advanced Respiratory Sound Analysis</p>
+        <div class="footer-links">
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fas fa-envelope"></i></a>
+        </div>
+        <small>© 2025 Auscura | Developed by Chaitanya Ganguly & Team, Biomedical Engineering, VIT Mumbai</small>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  
+  <script>
+  // ===========================================
+  // SUPABASE INITIALIZATION
+  // ===========================================
+  const SUPABASE_URL = 'https://xywyheflpidhpbhxpyqm.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5d3loZWZscGlkaHBiaHhweXFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMjcwNTAsImV4cCI6MjA4ODkwMzA1MH0.nvJAIvfFT_OdSljfTstukeIHp6ivEkhoC-veOuQDPVk';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // ===========================================
+  // GLOBAL VARIABLES
+  // ===========================================
+  let currentUser = null;
+  let userType = null;
+  let currentChatRoom = null;
+  let chatSubscription = null;
+  let allDoctors = [];
+  let authMode = 'login';
+  let currentDoctor = null;
+  let currentAuthType = 'patient';
+
+  // ===========================================
+  // HELPER: Check a doctor's availability for today
+  // ===========================================
+  async function checkDoctorAvailabilityForToday(doctorId) {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    try {
+      const { data, error } = await supabaseClient
+        .from('doctor_availability')
+        .select('is_available')
+        .eq('doctor_id', doctorId)
+        .eq('day_of_week', dayOfWeek)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? data.is_available : false;
+    } catch (e) {
+      console.error('Error fetching doctor availability:', e);
+      return false;
+    }
+  }
+
+  // ===========================================
+  // ADDITIONAL ANIMATED BACKGROUND FUNCTIONS
+  // ===========================================
+  
+  function addFloatingParticles() {
+    // Add floating particles to body
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'bg-particle';
+      const size = Math.random() * 6 + 2;
+      particle.style.width = size + 'px';
+      particle.style.height = size + 'px';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 20 + 's';
+      particle.style.animationDuration = (Math.random() * 15 + 8) + 's';
+      particle.style.background = `linear-gradient(135deg, 
+        rgba(44, 90, 160, ${Math.random() * 0.3 + 0.2}), 
+        rgba(0, 188, 212, ${Math.random() * 0.3 + 0.2}))`;
+      document.body.appendChild(particle);
+    }
+    
+    // Add floating medical icons
+    const medicalIcons = ['🫁', '❤️', '🩺', '🌬️', '💙', '⚕️', '🏥', '💊', '🌡️', '🫀'];
+    for (let i = 0; i < 30; i++) {
+      const icon = document.createElement('div');
+      icon.className = 'medical-float-icon';
+      icon.innerHTML = medicalIcons[Math.floor(Math.random() * medicalIcons.length)];
+      icon.style.left = Math.random() * 100 + '%';
+      icon.style.fontSize = (Math.random() * 30 + 15) + 'px';
+      icon.style.animationDelay = Math.random() * 30 + 's';
+      icon.style.animationDuration = (Math.random() * 25 + 20) + 's';
+      icon.style.opacity = Math.random() * 0.05 + 0.02;
+      document.body.appendChild(icon);
+    }
+  }
+
+  function addStaggeredAnimation() {
+    const appointmentCards = document.querySelectorAll('.appointment-card');
+    appointmentCards.forEach((card, index) => {
+      card.style.setProperty('--order', index);
+    });
+    
+    const patientCards = document.querySelectorAll('.patient-card');
+    patientCards.forEach((card, index) => {
+      card.style.setProperty('--order', index);
+    });
+  }
+
+  // ===========================================
+  // SESSION MANAGEMENT (unchanged)
+  // ===========================================
+  function loadSession() {
+    const storedUser = localStorage.getItem('auscura_user');
+    const storedType = localStorage.getItem('auscura_userType');
+    if (storedUser && storedType) {
+      try {
+        currentUser = JSON.parse(storedUser);
+        userType = storedType;
+        return true;
+      } catch (e) { console.error('Failed to parse stored user', e); }
+    }
+    return false;
+  }
+
+  function clearSession() {
+    localStorage.removeItem('auscura_user');
+    localStorage.removeItem('auscura_userType');
+  }
+
+  function updateAuthBar() {
+    const authButtonsDiv = document.getElementById('authButtons');
+    const userInfoDiv = document.getElementById('userInfo');
+    const userNameSpan = document.getElementById('userNameDisplay');
+    if (currentUser && userType) {
+      authButtonsDiv.style.display = 'none';
+      userInfoDiv.style.display = 'flex';
+      userNameSpan.innerText = `Hi, ${currentUser.name}`;
+    } else {
+      authButtonsDiv.style.display = 'flex';
+      userInfoDiv.style.display = 'none';
+    }
+  }
+
+  function applySessionUI() {
+  updateAuthBar();
+  if (userType === 'doctor') {
+    // Hide patient-specific elements
+    document.getElementById('filterSection').style.display = 'none';
+    document.getElementById('doctorsGrid').style.display = 'none';
+    document.getElementById('doctorDashboard').style.display = 'block';
+    
+    // Hide the "Consult a Lung Specialist" header section for doctors
+    const pageHeader = document.querySelector('.page-header');
+    if (pageHeader) {
+      pageHeader.style.display = 'none';
+    }
+    
+    loadDoctorDashboard(); // enhanced dashboard
+  } else {
+    // Show patient-specific elements
+    document.getElementById('filterSection').style.display = 'block';
+    document.getElementById('doctorsGrid').style.display = 'flex';
+    document.getElementById('doctorDashboard').style.display = 'none';
+    
+    // Show the "Consult a Lung Specialist" header section for patients
+    const pageHeader = document.querySelector('.page-header');
+    if (pageHeader) {
+      pageHeader.style.display = 'block';
+    }
+  }
+}
+
+  if (loadSession()) applySessionUI(); else updateAuthBar();
+
+  // ===========================================
+  // DOCTOR DATA (full sample doctors)
+  // ===========================================
+  const sampleDoctors = [
+    {
+      id: 1,
+      name: "Dr. Rajesh Sharma",
+      specialty: "Pulmonologist",
+      qualification: "MD, DNB (Pulmonology)",
+      experience: "15 years",
+      hospital: "VIT Multispecialty Hospital, Mumbai",
+      rating: 4.8,
+      reviews: 124,
+      image: "https://img.freepik.com/free-photo/doctor-with-stethoscope-hands-hospital-background_1423-1.jpg",
+      availability: "available",
+      fee: "₹800",
+      languages: ["English", "Hindi", "Marathi"],
+      about: "Specializes in COPD, Asthma, and Interventional Pulmonology",
+      email: "rajesh.sharma@hospital.com"
+    },
+    {
+      id: 2,
+      name: "Dr. Priya Patel",
+      specialty: "Respiratory Specialist",
+      qualification: "MD, MRCP (UK)",
+      experience: "12 years",
+      hospital: "City Lung Care Center, Mumbai",
+      rating: 4.9,
+      reviews: 98,
+      image: "https://img.freepik.com/free-photo/young-female-doctor-with-stethoscope_1303-17479.jpg",
+      availability: "available",
+      fee: "₹1000",
+      languages: ["English", "Hindi", "Gujarati"],
+      about: "Expert in Sleep Disorders, Asthma Management, and Respiratory Allergies",
+      email: "priya.patel@citylungcare.com"
+    },
+    {
+      id: 3,
+      name: "Dr. Amit Kumar",
+      specialty: "Critical Care Specialist",
+      qualification: "MD, IDCCM",
+      experience: "10 years",
+      hospital: "Global Hospital, Mumbai",
+      rating: 4.7,
+      reviews: 86,
+      image: "https://img.freepik.com/free-photo/portrait-smiling-male-doctor_171337-1532.jpg",
+      availability: "busy",
+      fee: "₹1200",
+      languages: ["English", "Hindi"],
+      about: "Specializes in Critical Respiratory Care and Mechanical Ventilation",
+      email: "amit.kumar@globalhospital.com"
+    },
+    {
+      id: 4,
+      name: "Dr. Sneha Desai",
+      specialty: "Pediatric Pulmonologist",
+      qualification: "MD, Fellowship in Pediatric Pulmonology",
+      experience: "8 years",
+      hospital: "Children's Lung Clinic, Mumbai",
+      rating: 4.9,
+      reviews: 112,
+      image: "https://img.freepik.com/free-photo/smiling-doctor-with-stethoscope_144627-135.jpg",
+      availability: "available",
+      fee: "₹900",
+      languages: ["English", "Hindi", "Marathi", "Gujarati"],
+      about: "Specializes in Childhood Asthma, Respiratory Infections, and Allergies",
+      email: "sneha.desai@childrensclinic.com"
+    },
+    {
+      id: 5,
+      name: "Dr. Vikram Mehta",
+      specialty: "Interventional Pulmonologist",
+      qualification: "DM, FICP",
+      experience: "18 years",
+      hospital: "Breath Easy Clinic, Mumbai",
+      rating: 4.8,
+      reviews: 156,
+      image: "https://img.freepik.com/free-photo/doctor-with-stethoscope_23-2147764565.jpg",
+      availability: "busy",
+      fee: "₹1500",
+      languages: ["English", "Hindi"],
+      about: "Expert in Bronchoscopy, Lung Cancer, and Complex Airway Disorders",
+      email: "vikram.mehta@breatheasy.com"
+    },
+    {
+      id: 6,
+      name: "Dr. Anjali Gupta",
+      specialty: "Sleep Medicine Specialist",
+      qualification: "MD, Fellowship in Sleep Medicine",
+      experience: "9 years",
+      hospital: "Sleep Care Center, Mumbai",
+      rating: 4.7,
+      reviews: 67,
+      image: "https://img.freepik.com/free-photo/indian-doctor-with-stethoscope_79782-1301.jpg",
+      availability: "available",
+      fee: "₹1100",
+      languages: ["English", "Hindi"],
+      about: "Specializes in Sleep Apnea, CPAP Therapy, and Sleep-Related Breathing Disorders",
+      email: "anjali.gupta@sleepcare.com"
+    }
+  ];
+
+  // ===========================================
+  // DISPLAY DOCTORS (UPDATED with dynamic availability)
+  // ===========================================
+  async function displayDoctors(filteredDoctors = null) {
+    const grid = document.getElementById('doctorsGrid');
+    grid.innerHTML = '';
+
+    // Fetch registered doctors
+    let registeredDoctors = [];
+    try {
+      const { data, error } = await supabaseClient
+        .from('doctors_registered')
+        .select('*');
+      if (!error && data) registeredDoctors = data;
+    } catch (e) {
+      console.error('Error fetching registered doctors:', e);
+    }
+
+    // For each registered doctor, fetch average rating and review count
+    const registeredWithReviews = await Promise.all(registeredDoctors.map(async (reg) => {
+      const { data: reviews, error } = await supabaseClient
+        .from('reviews')
+        .select('rating')
+        .eq('doctor_id', reg.id);
+      if (error) console.error('Error fetching reviews:', error);
+      const avgRating = reviews && reviews.length > 0 
+        ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+        : 0;
+      const reviewCount = reviews ? reviews.length : 0;
+      return {
+        ...reg,
+        rating: parseFloat(avgRating) || 0,
+        reviews: reviewCount,
+        uuid: reg.id
+      };
+    }));
+
+    // Combine sample doctors with registered doctors
+    allDoctors = [
+      ...sampleDoctors,
+      ...registeredWithReviews.map((reg, index) => ({
+        id: 1000 + index,
+        uuid: reg.id,
+        name: reg.name,
+        specialty: reg.specialty,
+        qualification: reg.qualification || 'N/A',
+        experience: reg.experience ? reg.experience + ' years' : 'N/A',
+        hospital: reg.hospital || 'Not specified',
+        rating: reg.rating,
+        reviews: reg.reviews,
+        image: reg.image || 'https://img.freepik.com/free-photo/doctor-with-stethoscope_23-2147764565.jpg',
+        fee: reg.fee || 'N/A',
+        languages: reg.languages || ['English'],
+        about: reg.about || `Specializes in ${reg.specialty}`,
+        email: reg.email
+      }))
+    ];
+
+    // Fetch today's availability for each doctor (for patient view)
+    const todayAvailability = {};
+    if (userType === 'patient' || !currentUser) {
+      for (const doc of allDoctors) {
+        const doctorId = doc.uuid || doc.id;
+        const isAvailable = await checkDoctorAvailabilityForToday(doctorId);
+        todayAvailability[doctorId] = isAvailable;
+      }
+    }
+
+    const doctorsToShow = filteredDoctors || allDoctors;
+    
+    doctorsToShow.forEach(doctor => {
+      const doctorId = doctor.uuid || doctor.id;
+      const isAvailableNow = todayAvailability[doctorId] === true;
+      const availabilityBadge = isAvailableNow
+        ? '<span class="doctor-badge available"></span>'
+        : '<span class="doctor-badge unavailable"> </span>';
+
+      const fullStars = '★'.repeat(Math.floor(doctor.rating));
+      const halfStar = (doctor.rating % 1) >= 0.5 ? '½' : '';
+      const emptyStars = '☆'.repeat(5 - Math.floor(doctor.rating) - (halfStar ? 1 : 0));
+      const ratingDisplay = fullStars + halfStar + emptyStars;
+      
+      const card = document.createElement('div');
+      card.className = 'col-md-6 col-lg-4';
+      
+      let actionButtons = '';
+      if (currentUser) {
+        if (userType === 'patient') {
+          actionButtons = `
+            <div class="doctor-actions">
+              <button class="btn-chat" onclick="openChat(${doctor.id})">
+                <i class="fas fa-comment me-2"></i>Chat
+              </button>
+              <button class="btn-book" onclick="openAppointment(${doctor.id})">
+                <i class="fas fa-calendar-check me-2"></i>Book
+              </button>
+              <button class="btn-view-reviews" onclick="viewReviews(${doctor.id}, '${doctor.name}')">
+                <i class="fas fa-star me-2"></i>View Reviews (${doctor.reviews})
+              </button>
+              <button class="btn btn-outline-warning btn-sm mt-2 w-100" onclick="openReviewModal(${doctor.id}, '${doctor.name}')">
+                <i class="fas fa-pen me-2"></i>Write a Review
+              </button>
+            </div>
+          `;
+        } else {
+          actionButtons = `
+            <div class="doctor-actions">
+              <button class="btn-view-reviews" onclick="viewReviews(${doctor.id}, '${doctor.name}')">
+                <i class="fas fa-star me-2"></i>View Reviews (${doctor.reviews})
+              </button>
+            </div>
+          `;
+        }
+      } else {
+        actionButtons = `
+          <div class="doctor-actions">
+            <button class="btn-view-reviews" onclick="viewReviews(${doctor.id}, '${doctor.name}')">
+              <i class="fas fa-star me-2"></i>View Reviews (${doctor.reviews})
+            </button>
+            <button class="btn btn-primary w-100 mt-2" onclick="openAuthModal()">
+              <i class="fas fa-sign-in-alt me-2"></i>Login to Interact
+            </button>
+          </div>
+        `;
+      }
+      
+      card.innerHTML = `
+        <div class="doctor-card animate__animated animate__fadeIn">
+          ${availabilityBadge}
+          <img src="${doctor.image}" alt="${doctor.name}" class="doctor-image">
+          <div class="doctor-info">
+            <h3 class="doctor-name">${doctor.name}</h3>
+            <p class="doctor-specialty">${doctor.specialty}</p>
+            <div class="doctor-rating" onclick="viewReviews(${doctor.id}, '${doctor.name}')">
+              <span class="stars">${ratingDisplay}</span>
+              <span class="rating-number">(${doctor.rating.toFixed(1)}) • ${doctor.reviews} reviews</span>
+            </div>
+            <div class="doctor-details">
+              <div class="detail-item"><i class="fas fa-graduation-cap"></i><span>${doctor.qualification}</span></div>
+              <div class="detail-item"><i class="fas fa-briefcase"></i><span>${doctor.experience}</span></div>
+              <div class="detail-item"><i class="fas fa-hospital"></i><span>${doctor.hospital}</span></div>
+              <div class="detail-item"><i class="fas fa-language"></i><span>${doctor.languages.join(', ')}</span></div>
+              <div class="detail-item"><i class="fas fa-rupee-sign"></i><span>Consultation Fee: ${doctor.fee}</span></div>
+              <div class="detail-item"><i class="fas fa-info-circle"></i><span>${doctor.about}</span></div>
+            </div>
+            ${actionButtons}
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // ===========================================
+  // REVIEW FUNCTIONS (unchanged)
+  // ===========================================
+  let currentReviewDoctorId = null;
+  let currentReviewDoctorName = '';
+
+  window.openReviewModal = function(doctorId, doctorName) {
+    if (!currentUser || userType !== 'patient') {
+      alert('Please login as a patient to write reviews');
+      openAuthModal();
+      return;
+    }
+    currentReviewDoctorId = doctorId;
+    currentReviewDoctorName = doctorName;
+    document.getElementById('reviewDoctorName').innerText = `Review ${doctorName}`;
+    document.getElementById('reviewRating').value = 0;
+    document.getElementById('reviewComment').value = '';
+    document.querySelectorAll('#starRating .star').forEach(s => s.innerText = '☆');
+    document.getElementById('reviewModal').classList.add('active');
+  };
+
+  window.closeReviewModal = function() {
+    document.getElementById('reviewModal').classList.remove('active');
+  };
+
+  document.querySelectorAll('#starRating .star').forEach(star => {
+    star.addEventListener('click', function(e) {
+      const rating = parseInt(this.getAttribute('data-rating'));
+      document.getElementById('reviewRating').value = rating;
+      document.querySelectorAll('#starRating .star').forEach((s, idx) => {
+        s.innerText = idx < rating ? '★' : '☆';
+      });
+    });
+  });
+
+  window.submitReview = async function() {
+    const rating = parseInt(document.getElementById('reviewRating').value);
+    const comment = document.getElementById('reviewComment').value.trim();
+    if (rating === 0) {
+      alert('Please select a rating');
+      return;
+    }
+    
+    const doctor = allDoctors.find(d => d.id === currentReviewDoctorId);
+    const doctorId = doctor.uuid || currentReviewDoctorId;
+    
+    try {
+      const { error } = await supabaseClient
+        .from('reviews')
+        .insert([{
+          doctor_id: doctorId,
+          patient_id: currentUser.id,
+          rating: rating,
+          comment: comment
+        }]);
+      if (error) throw error;
+      alert('Review submitted successfully!');
+      closeReviewModal();
+      await displayDoctors();
+    } catch (error) {
+      alert('Error submitting review: ' + error.message);
+    }
+  };
+
+  window.viewReviews = async function(doctorId, doctorName) {
+    const doctor = allDoctors.find(d => d.id === doctorId);
+    const doctorUuid = doctor.uuid || doctorId;
+    
+    document.getElementById('reviewsDoctorName').innerText = `Reviews for ${doctorName}`;
+    document.getElementById('reviewsList').innerHTML = '<p class="no-reviews">Loading reviews...</p>';
+    document.getElementById('reviewsModal').classList.add('active');
+    
+    try {
+      let query = supabaseClient
+        .from('reviews')
+        .select('*')
+        .eq('doctor_id', doctorUuid)
+        .order('created_at', { ascending: false });
+      
+      const { data: reviews, error } = await query;
+      
+      if (error) throw error;
+      
+      const reviewsList = document.getElementById('reviewsList');
+      
+      if (!reviews || reviews.length === 0) {
+        reviewsList.innerHTML = '<p class="no-reviews">No reviews yet for this doctor.</p>';
+        return;
+      }
+      
+      const patientIds = [...new Set(reviews.map(r => r.patient_id))];
+      const { data: patients, error: patientError } = await supabaseClient
+        .from('patients')
+        .select('id, name')
+        .in('id', patientIds);
+      
+      if (patientError) throw patientError;
+      
+      const patientMap = {};
+      patients.forEach(p => { patientMap[p.id] = p.name; });
+      
+      let html = '';
+      reviews.forEach(review => {
+        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+        const date = new Date(review.created_at).toLocaleDateString();
+        const patientName = patientMap[review.patient_id] || 'Anonymous';
+        
+        html += `
+          <div class="review-item">
+            <div class="review-item-header">
+              <span class="review-item-rating">${stars}</span>
+              <span class="review-item-date">${date}</span>
+            </div>
+            <div class="review-item-patient">${patientName}</div>
+            <div class="review-item-comment">${review.comment || 'No comment provided.'}</div>
+          </div>
+        `;
+      });
+      
+      reviewsList.innerHTML = html;
+    } catch (error) {
+      console.error('Error loading reviews:', error);
+      document.getElementById('reviewsList').innerHTML = '<p class="no-reviews">Error loading reviews.</p>';
+    }
+  };
+
+  window.closeReviewsModal = function() {
+    document.getElementById('reviewsModal').classList.remove('active');
+  };
+
+  // ===========================================
+  // FILTER DOCTORS (UPDATED with dynamic availability)
+  // ===========================================
+  window.filterDoctors = async function(filter) {
+    const tags = document.querySelectorAll('.filter-tag');
+    tags.forEach(tag => tag.classList.remove('active'));
+    event.target.classList.add('active');
+
+    let filtered = [...allDoctors];
+
+    if (filter === 'available') {
+      // Filter doctors who are available today
+      const availabilityPromises = filtered.map(async (doc) => {
+        const doctorId = doc.uuid || doc.id;
+        const isAvailable = await checkDoctorAvailabilityForToday(doctorId);
+        return { doc, isAvailable };
+      });
+      const results = await Promise.all(availabilityPromises);
+      filtered = results.filter(r => r.isAvailable).map(r => r.doc);
+    } else if (filter !== 'all') {
+      filtered = filtered.filter(doc => doc.specialty.toLowerCase().includes(filter.toLowerCase()));
+    }
+    displayDoctors(filtered);
+  };
+
+  document.getElementById('searchDoctor')?.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const filtered = allDoctors.filter(doctor => 
+      doctor.name.toLowerCase().includes(searchTerm) ||
+      doctor.specialty.toLowerCase().includes(searchTerm) ||
+      doctor.hospital.toLowerCase().includes(searchTerm)
+    );
+    displayDoctors(filtered);
+  });
+
+  // ===========================================
+  // AUTH FUNCTIONS (unchanged)
+  // ===========================================
+  // ===========================================
+  // NEUMORPHIC AUTH MODAL CONTROLS
+  // ===========================================
+  const neuContainer = document.getElementById('neuContainer');
+
+  // Overlay slide buttons
+  document.getElementById('neuSignUp').addEventListener('click', () => {
+    neuContainer.classList.add('right-panel-active');
+    authMode = 'register';
+  });
+  document.getElementById('neuSignIn').addEventListener('click', () => {
+    neuContainer.classList.remove('right-panel-active');
+    authMode = 'login';
+  });
+
+  // Mobile toggle
+  function neuToggleMobile() {
+    if (neuContainer.classList.contains('right-panel-active')) {
+      neuContainer.classList.remove('right-panel-active');
+      authMode = 'login';
+    } else {
+      neuContainer.classList.add('right-panel-active');
+      authMode = 'register';
+    }
+  }
+
+  // Switch Patient / Doctor tabs (works in both panels)
+  function switchNeuTab(type, panel) {
+    currentAuthType = type;
+
+    if (panel === 'login') {
+      document.getElementById('loginTabPatient').classList.toggle('active', type === 'patient');
+      document.getElementById('loginTabDoctor').classList.toggle('active', type === 'doctor');
+    } else {
+      document.getElementById('registerTabPatient').classList.toggle('active', type === 'patient');
+      document.getElementById('registerTabDoctor').classList.toggle('active', type === 'doctor');
+      // Show correct register fields
+      document.getElementById('registerPatientFields').style.display = type === 'patient' ? 'block' : 'none';
+      document.getElementById('registerDoctorFields').style.display  = type === 'doctor'  ? 'block' : 'none';
+    }
+  }
+
+  function openAuthModal() {
+    authMode = 'login';
+    neuContainer.classList.remove('right-panel-active');
+    document.getElementById('authModal').classList.add('active');
+    // Reset status
+    const status = document.getElementById('authStatus');
+    status.style.display = 'none';
+    status.textContent = '';
+  }
+
+  function closeAuthModal() {
+    document.getElementById('authModal').classList.remove('active');
+  }
+
+  // Keep legacy aliases in case called elsewhere
+  function showLogin() {
+    neuContainer.classList.remove('right-panel-active');
+    authMode = 'login';
+  }
+  function showRegister() {
+    neuContainer.classList.add('right-panel-active');
+    authMode = 'register';
+  }
+
+  // Legacy tab switcher alias (kept for safety)
+  window.switchAuthTab = function(type) {
+    currentAuthType = type;
+  };
+
+  window.registerPatient = async function() {
+    const name = document.getElementById('regPatientName').value;
+    const email = document.getElementById('regPatientEmail').value;
+    const phone = document.getElementById('regPatientPhone').value;
+    const password = document.getElementById('regPatientPassword').value;
+    if (!name || !email || !phone || !password) {
+      alert('Please fill all fields');
+      return;
+    }
+    try {
+      const { error } = await supabaseClient.from('patients').insert([{ name, email, phone, password }]);
+      if (error) throw error;
+      alert('Registration successful! Please login.');
+      showLogin();
+    } catch (error) { alert(error.message); }
+  };
+
+  async function uploadDoctorImage(file) {
+    if (!file) return null;
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `doctor-${fileName}`;
+    const { error } = await supabaseClient.storage.from('doctor-photos').upload(filePath, file);
+    if (error) throw error;
+    const { data: urlData } = supabaseClient.storage.from('doctor-photos').getPublicUrl(filePath);
+    return urlData.publicUrl;
+  }
+
+  window.registerDoctor = async function() {
+    const name = document.getElementById('regDoctorName').value;
+    const email = document.getElementById('regDoctorEmail').value;
+    const phone = document.getElementById('regDoctorPhone').value;
+    const specialty = document.getElementById('regDoctorSpecialty').value;
+    const qualification = document.getElementById('regDoctorQualification').value;
+    const experience = document.getElementById('regDoctorExperience').value;
+    const hospital = document.getElementById('regDoctorHospital').value;
+    const fee = document.getElementById('regDoctorFee').value;
+    const languages = document.getElementById('regDoctorLanguages').value.split(',').map(l => l.trim());
+    const password = document.getElementById('regDoctorPassword').value;
+    const imageFile = document.getElementById('regDoctorImage').files[0];
+    if (!name || !email || !phone || !specialty || !password) {
+      alert('Please fill required fields');
+      return;
+    }
+    let imageUrl = '';
+    if (imageFile) {
+      try {
+        imageUrl = await uploadDoctorImage(imageFile);
+      } catch (e) {
+        alert('Image upload failed: ' + e.message);
+        return;
+      }
+    }
+    try {
+      const { error } = await supabaseClient.from('doctors_registered').insert([{ 
+        name, email, phone, specialty, qualification, 
+        experience, hospital, fee, languages, password,
+        image: imageUrl
+      }]);
+      if (error) throw error;
+      alert('Registration successful! Please login.');
+      await displayDoctors();
+      showLogin();
+    } catch (error) { alert(error.message); }
+  };
+
+  window.login = async function() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    if (!email || !password) {
+      alert('Please fill both fields');
+      return;
+    }
+    try {
+      let { data: patients } = await supabaseClient.from('patients').select('*').eq('email', email).eq('password', password);
+      if (patients && patients.length > 0) {
+        currentUser = patients[0];
+        userType = 'patient';
+      } else {
+        let { data: doctors } = await supabaseClient.from('doctors_registered').select('*').eq('email', email).eq('password', password);
+        if (doctors && doctors.length > 0) {
+          currentUser = doctors[0];
+          userType = 'doctor';
+        } else {
+          throw new Error('Invalid email or password');
+        }
+      }
+      localStorage.setItem('auscura_user', JSON.stringify(currentUser));
+      localStorage.setItem('auscura_userType', userType);
+      updateAuthBar();
+      closeAuthModal();
+      applySessionUI(); // refresh dashboard
+      await displayDoctors();
+    } catch (error) { alert(error.message); }
+  };
+
+  window.logout = function() {
+    currentUser = null;
+    userType = null;
+    clearSession();
+    window.location.href = 'index.html';
+  };
+
+  // ===========================================
+  // ENHANCED DOCTOR DASHBOARD FUNCTIONS
+  // ===========================================
+  async function loadDoctorDashboard() {
+    if (!currentUser || userType !== 'doctor') return;
+
+    // Profile data
+    document.getElementById('dashboardDoctorNameFull').innerText = currentUser.name;
+    document.getElementById('dashboardDoctorSpecialty').innerText = currentUser.specialty || 'General Practitioner';
+    const profileImg = document.getElementById('profileImg');
+    profileImg.src = currentUser.image || 'https://img.freepik.com/free-photo/doctor-with-stethoscope_23-2147764565.jpg';
+
+    // Fetch data
+    const appointments = await fetchAppointments();
+    const patients = await fetchPatients();
+    const reviews = await fetchReviews();
+
+    // Update stats
+    document.getElementById('statAppointments').innerText = appointments.length;
+    document.getElementById('statPatients').innerText = patients.length;
+    let avgRating = 0;
+    if (reviews.length > 0) avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+    document.getElementById('statRating').innerText = avgRating.toFixed(1);
+
+    // Render tabs
+    renderAppointments(appointments);
+    renderPatients(patients);
+    renderReviews(reviews);
+    renderAvailability();
+    
+    // Add staggered animations after rendering
+    setTimeout(addStaggeredAnimation, 100);
+  }
+
+  async function fetchAppointments() {
+    const { data, error } = await supabaseClient
+      .from('appointments')
+      .select('*')
+      .eq('doctor_name', currentUser.name)
+      .order('appointment_date', { ascending: true });
+    if (error) return [];
+    return data;
+  }
+
+  async function fetchPatients() {
+    const { data: messages, error } = await supabaseClient
+      .from('messages')
+      .select('room_id')
+      .eq('doctor_name', currentUser.name);
+    if (error) return [];
+    const patientIds = [...new Set(messages.map(msg => {
+      const match = msg.room_id.match(/patient_([^_]+)$/);
+      return match ? match[1] : null;
+    }).filter(id => id))];
+    if (patientIds.length === 0) return [];
+    const { data: patients, error: patientError } = await supabaseClient
+      .from('patients')
+      .select('id, name, email')
+      .in('id', patientIds);
+    if (patientError) return [];
+    return patients;
+  }
+
+  async function fetchReviews() {
+    const { data: reviews, error } = await supabaseClient
+      .from('reviews')
+      .select('*')
+      .eq('doctor_id', currentUser.id)
+      .order('created_at', { ascending: false });
+    if (error) return [];
+    const patientIds = [...new Set(reviews.map(r => r.patient_id))];
+    if (patientIds.length === 0) return reviews.map(r => ({ ...r, patientName: 'Anonymous' }));
+    const { data: patients, error: patientError } = await supabaseClient
+      .from('patients')
+      .select('id, name')
+      .in('id', patientIds);
+    if (patientError) return reviews.map(r => ({ ...r, patientName: 'Anonymous' }));
+    const patientMap = {};
+    patients.forEach(p => patientMap[p.id] = p.name);
+    return reviews.map(r => ({ ...r, patientName: patientMap[r.patient_id] || 'Anonymous' }));
+  }
+
+  function renderAppointments(appointments) {
+    const container = document.getElementById('appointmentsList');
+    if (!appointments.length) {
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-times"></i><p>No appointments yet.</p></div>`;
+      return;
+    }
+    let html = '';
+    appointments.forEach(apt => {
+      html += `
+        <div class="appointment-card">
+          <div class="appointment-header">
+            <strong>${apt.patient_name}</strong>
+            <span class="badge-confirmed">Confirmed</span>
+          </div>
+          <div class="appointment-details">
+            <span><i class="fas fa-calendar-day"></i> ${apt.appointment_date}</span>
+            <span><i class="fas fa-clock"></i> ${apt.appointment_time}</span>
+          </div>
+          <div class="appointment-reason">
+            <i class="fas fa-stethoscope me-1"></i> ${apt.reason || 'No reason provided'}
+          </div>
+          <div class="appointment-actions">
+            <button class="btn-chat-sm" onclick="openChatWithPatient('${apt.patient_id || ''}', '${apt.patient_name}')">
+              <i class="fas fa-comment me-1"></i> Chat
+            </button>
+            <button class="btn-cancel" onclick="cancelAppointment('${apt.id}')">
+              <i class="fas fa-times me-1"></i> Cancel
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  function renderPatients(patients) {
+    const container = document.getElementById('dashboardPatientList');
+    const searchInput = document.getElementById('patientSearchInput');
+    if (!patients.length) {
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-user-friends"></i><p>No patients yet.</p></div>`;
+      searchInput.disabled = true;
+      return;
+    }
+    searchInput.disabled = false;
+    let filtered = patients;
+    const filter = () => {
+      const term = searchInput.value.toLowerCase();
+      filtered = patients.filter(p => p.name.toLowerCase().includes(term) || (p.email && p.email.toLowerCase().includes(term)));
+      renderList();
+    };
+    const renderList = () => {
+      let html = '';
+      filtered.forEach(patient => {
+        const initials = patient.name.split(' ').map(n => n[0]).join('').toUpperCase();
+        html += `
+          <div class="patient-card">
+            <div class="d-flex align-items-center">
+              <div class="patient-avatar">${initials}</div>
+              <div class="patient-info">
+                <div class="patient-name">${patient.name}</div>
+                <div class="patient-email">${patient.email || 'No email'}</div>
+              </div>
+            </div>
+            <div class="patient-actions">
+              <button class="btn-chat-sm" onclick="openChatWithPatient('${patient.id}', '${patient.name}')">
+                <i class="fas fa-comment"></i> Chat
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    };
+    renderList();
+    searchInput.oninput = filter;
+  }
+
+  function renderReviews(reviews) {
+    const container = document.getElementById('dashboardReviewsList');
+    if (!reviews.length) {
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-star"></i><p>No reviews yet.</p></div>`;
+      return;
+    }
+    let html = '';
+    reviews.forEach(review => {
+      const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+      const date = new Date(review.created_at).toLocaleDateString();
+      html += `
+        <div class="review-item-card">
+          <div class="review-header">
+            <span class="review-stars">${stars}</span>
+            <span class="review-date">${date}</span>
+          </div>
+          <div class="review-patient">${review.patientName}</div>
+          <div class="review-comment">${review.comment || 'No comment provided.'}</div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  async function renderAvailability() {
+    const container = document.getElementById('availabilityGrid');
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    let availability = [];
+    try {
+      const { data, error } = await supabaseClient
+        .from('doctor_availability')
+        .select('*')
+        .eq('doctor_id', currentUser.id);
+      if (!error) availability = data || [];
+    } catch (e) { console.error(e); }
+
+    let html = '<div class="availability-grid">';
+    days.forEach((day, idx) => {
+      const existing = availability.find(a => a.day_of_week === idx);
+      const isAvailable = existing && existing.is_available;
+      const timeSlots = existing ? `${existing.start_time} – ${existing.end_time}` : 'Not set';
+      html += `
+        <div class="day-card">
+          <div class="day-name">${day}</div>
+          <div class="time-slots">${timeSlots}</div>
+          <div class="${isAvailable ? 'status-available' : 'status-unavailable'}">
+            ${isAvailable ? 'Available' : 'Unavailable'}
+          </div>
+        </div>
+      `;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  // Availability editor (reuse original loadDoctorAvailability and saveAvailability)
+  let originalSaveAvailability = null;
+  function openAvailabilityEditor() {
+    document.getElementById('availabilityEditor').style.display = 'block';
+    // Call original loadDoctorAvailability to populate the form
+    if (typeof loadDoctorAvailability === 'function') loadDoctorAvailability();
+  }
+  function closeAvailabilityEditor() {
+    document.getElementById('availabilityEditor').style.display = 'none';
+    renderAvailability();
+  }
+
+  // Profile photo upload
+  document.getElementById('uploadProfileBtn').addEventListener('click', () => {
+    document.getElementById('profileUploadInput').click();
+  });
+  document.getElementById('profileUploadInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const url = await uploadDoctorImage(file);
+      if (url) {
+        const { error } = await supabaseClient
+          .from('doctors_registered')
+          .update({ image: url })
+          .eq('id', currentUser.id);
+        if (error) throw error;
+        currentUser.image = url;
+        localStorage.setItem('auscura_user', JSON.stringify(currentUser));
+        document.getElementById('profileImg').src = url;
+        alert('Profile photo updated successfully!');
+        displayDoctors(); // refresh patient view
+      }
+    } catch (err) {
+      alert('Failed to upload photo: ' + err.message);
+    }
+  });
+
+  // Tab switching
+  document.querySelectorAll('.dashboard-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.dashboard-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tabAppointments').style.display = 'none';
+      document.getElementById('tabPatients').style.display = 'none';
+      document.getElementById('tabReviews').style.display = 'none';
+      document.getElementById('tabAvailability').style.display = 'none';
+      if (target === 'appointments') document.getElementById('tabAppointments').style.display = 'block';
+      if (target === 'patients') document.getElementById('tabPatients').style.display = 'block';
+      if (target === 'reviews') document.getElementById('tabReviews').style.display = 'block';
+      if (target === 'availability') document.getElementById('tabAvailability').style.display = 'block';
+    });
+  });
+
+  document.getElementById('editAvailabilityBtn').addEventListener('click', openAvailabilityEditor);
+  document.getElementById('saveAvailabilityBtn').addEventListener('click', async () => {
+    await saveAvailability(); // original save function
+    closeAvailabilityEditor();
+  });
+  document.getElementById('cancelAvailabilityBtn').addEventListener('click', closeAvailabilityEditor);
+
+  window.cancelAppointment = async function(appointmentId) {
+    if (confirm('Cancel this appointment?')) {
+      const { error } = await supabaseClient.from('appointments').delete().eq('id', appointmentId);
+      if (error) alert('Failed to cancel: ' + error.message);
+      else {
+        alert('Appointment cancelled');
+        loadDoctorDashboard();
+      }
+    }
+  };
+
+  // ===========================================
+  // ORIGINAL FUNCTIONS (preserved for compatibility)
+  // ===========================================
+  let loadDoctorAvailability = async function() {
+    const formContainer = document.getElementById('availabilityForm');
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    try {
+      const { data: availability, error } = await supabaseClient
+        .from('doctor_availability')
+        .select('*')
+        .eq('doctor_id', currentUser.id);
+      if (error) throw error;
+      let html = '';
+      days.forEach((day, index) => {
+        const existing = availability.find(a => a.day_of_week === index);
+        html += `
+          <div class="availability-row">
+            <label>${day}</label>
+            <input type="time" id="start-${index}" value="${existing ? existing.start_time : '09:00'}">
+            <span>to</span>
+            <input type="time" id="end-${index}" value="${existing ? existing.end_time : '17:00'}">
+            <input type="checkbox" id="avail-${index}" ${existing && existing.is_available ? 'checked' : ''}> Available
+          </div>
+          
+        `;
+      });
+      formContainer.innerHTML = html;
+    } catch (error) {
+      console.error('Error loading availability:', error);
+    }
+  };
+
+  window.saveAvailability = async function() {
+    const newAvailability = [];
+    for (let i = 0; i < 7; i++) {
+      const start = document.getElementById(`start-${i}`).value;
+      const end = document.getElementById(`end-${i}`).value;
+      const isAvailable = document.getElementById(`avail-${i}`).checked;
+      if (!start || !end) continue;
+      newAvailability.push({
+        doctor_id: currentUser.id,
+        day_of_week: i,
+        start_time: start,
+        end_time: end,
+        is_available: isAvailable
+      });
+    }
+    try {
+      await supabaseClient.from('doctor_availability').delete().eq('doctor_id', currentUser.id);
+      if (newAvailability.length > 0) {
+        const { error } = await supabaseClient.from('doctor_availability').insert(newAvailability);
+        if (error) throw error;
+      }
+      alert('Availability saved successfully!');
+      renderAvailability();
+    } catch (error) {
+      alert('Error saving availability: ' + error.message);
+    }
+  };
+
+  // CHAT FUNCTIONS (unchanged) – keep your existing chat functions here
+  // ... (all openChat, sendChatMessage, etc.) ...
+
+  // ===========================================
+  // INITIALIZE
+  // ===========================================
+  (async () => {
+    await displayDoctors();
+    addFloatingParticles(); // Add animated particles
+  })();
+
+  document.getElementById('loginBtn').addEventListener('click', () => { openAuthModal(); showLogin(); });
+  document.getElementById('registerBtn').addEventListener('click', () => { openAuthModal(); showRegister(); });
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+
+  window.onclick = function(event) {
+    if (event.target.classList.contains('chat-modal')) closeChat();
+    if (event.target.classList.contains('appointment-modal')) closeAppointment();
+    if (event.target.classList.contains('auth-modal')) closeAuthModal();
+    if (event.target.classList.contains('review-modal')) closeReviewModal();
+    if (event.target.classList.contains('reviews-modal')) closeReviewsModal();
+  };
+
+  // ===========================================
+// ANIMATED BACKGROUND ELEMENTS
+// ===========================================
+
+function createAnimatedBackground() {
+  // Create floating particles
+  for (let i = 0; i < 80; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle-bg';
+    const size = Math.random() * 4 + 2;
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 20 + 's';
+    particle.style.animationDuration = (Math.random() * 12 + 8) + 's';
+    particle.style.background = `linear-gradient(135deg, 
+      rgba(44, 90, 160, ${Math.random() * 0.4 + 0.2}), 
+      rgba(0, 188, 212, ${Math.random() * 0.4 + 0.2}))`;
+    document.body.appendChild(particle);
+  }
+  
+  // Create glowing orbs
+  const orbColors = [
+    'rgba(44, 90, 160, 0.15)',
+    'rgba(0, 188, 212, 0.12)',
+    'rgba(76, 175, 80, 0.1)',
+    'rgba(44, 90, 160, 0.08)'
+  ];
+  
+  for (let i = 0; i < 6; i++) {
+    const orb = document.createElement('div');
+    orb.className = 'glow-orb-bg';
+    const size = Math.random() * 400 + 200;
+    orb.style.width = size + 'px';
+    orb.style.height = size + 'px';
+    orb.style.background = `radial-gradient(circle, ${orbColors[i % orbColors.length]} 0%, transparent 70%)`;
+    orb.style.left = Math.random() * 100 + '%';
+    orb.style.top = Math.random() * 100 + '%';
+    orb.style.animationDelay = Math.random() * 15 + 's';
+    orb.style.animationDuration = (Math.random() * 20 + 15) + 's';
+    document.body.appendChild(orb);
+  }
+}
+
+function addCardIndexes() {
+  // Add staggered animation delays to cards
+  const doctorCards = document.querySelectorAll('.doctor-card');
+  doctorCards.forEach((card, index) => {
+    card.style.setProperty('--card-index', index);
+  });
+  
+  const appointmentCards = document.querySelectorAll('.appointment-card');
+  appointmentCards.forEach((card, index) => {
+    card.style.setProperty('--card-index', index);
+  });
+  
+  const patientCards = document.querySelectorAll('.patient-card');
+  patientCards.forEach((card, index) => {
+    card.style.setProperty('--card-index', index);
+  });
+  
+  const reviewCards = document.querySelectorAll('.review-item-card');
+  reviewCards.forEach((card, index) => {
+    card.style.setProperty('--card-index', index);
+  });
+  
+  const dayCards = document.querySelectorAll('.day-card');
+  dayCards.forEach((card, index) => {
+    card.style.setProperty('--card-index', index);
+  });
+}
+
+// Call this when dashboard loads
+function enhanceBackground() {
+  addCardIndexes();
+}
+
+// Call createAnimatedBackground when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  createAnimatedBackground();
+  addCardIndexes();
+  
+  // Observe for dynamically added cards
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.addedNodes.length) {
+        setTimeout(addCardIndexes, 100);
+      }
+    });
+  });
+  
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
+// Override render functions to add indexes
+const originalRenderAppointments = renderAppointments;
+if (typeof renderAppointments === 'function') {
+  window.renderAppointments = function(appointments) {
+    originalRenderAppointments(appointments);
+    setTimeout(addCardIndexes, 50);
+  };
+}
+
+const originalRenderPatients = renderPatients;
+if (typeof renderPatients === 'function') {
+  window.renderPatients = function(patients) {
+    originalRenderPatients(patients);
+    setTimeout(addCardIndexes, 50);
+  };
+}
+
+const originalRenderReviews = renderReviews;
+if (typeof renderReviews === 'function') {
+  window.renderReviews = function(reviews) {
+    originalRenderReviews(reviews);
+    setTimeout(addCardIndexes, 50);
+  };
+}
+
+const originalRenderAvailability = renderAvailability;
+if (typeof renderAvailability === 'function') {
+  window.renderAvailability = function() {
+    originalRenderAvailability();
+    setTimeout(addCardIndexes, 50);
+  };
+}
+
+// Add this to ensure header visibility is correct on initial load
+document.addEventListener('DOMContentLoaded', function() {
+  if (userType === 'doctor') {
+    const pageHeader = document.querySelector('.page-header');
+    if (pageHeader) {
+      pageHeader.style.display = 'none';
+    }
+  }
+});
+
+  // ===========================================
+  // CHAT FUNCTIONS
+  // ===========================================
+  
+  window.openChat = async function(doctorId) {
+    if (!currentUser) {
+      alert('Please login to chat with doctors');
+      openAuthModal();
+      return;
+    }
+    currentDoctor = allDoctors.find(d => d.id === doctorId);
+    if (!currentDoctor) {
+      alert('Doctor not found');
+      return;
+    }
+    
+    if (userType === 'doctor' && currentDoctor.email === currentUser.email) {
+      document.getElementById('chatModal').classList.add('active');
+      document.getElementById('patientListView').style.display = 'block';
+      document.getElementById('chatView').style.display = 'none';
+      
+      const { data: messages, error } = await supabaseClient
+        .from('messages')
+        .select('room_id')
+        .eq('doctor_name', currentDoctor.name);
+      
+      if (error) {
+        console.error('Error loading messages:', error);
+        document.getElementById('patientList').innerHTML = '<li class="list-group-item">Error loading patients</li>';
+        return;
+      }
+      
+      const patientIds = [...new Set(messages?.map(msg => {
+        const match = msg.room_id.match(/patient_([^_]+)$/);
+        return match ? match[1] : null;
+      }).filter(id => id) || [])];
+      
+      if (patientIds.length) {
+        const { data: patients } = await supabaseClient
+          .from('patients')
+          .select('id, name')
+          .in('id', patientIds);
+        
+        if (patients && patients.length) {
+          document.getElementById('patientList').innerHTML = patients.map(p => 
+            `<li class="list-group-item" onclick="openChatWithPatient('${p.id}', '${p.name}')">${p.name}</li>`
+          ).join('');
+        } else {
+          document.getElementById('patientList').innerHTML = '<li class="list-group-item">No patients yet</li>';
+        }
+      } else {
+        document.getElementById('patientList').innerHTML = '<li class="list-group-item">No patients yet</li>';
+      }
+      return;
+    }
+    
+    document.getElementById('chatDoctorName').innerText = `Chat with ${currentDoctor.name}`;
+    document.getElementById('chatModal').classList.add('active');
+    showChatView();
+    currentChatRoom = `doctor_${doctorId}_patient_${currentUser.id}`;
+    
+    document.getElementById('chatMessages').innerHTML = '';
+    
+    try {
+      const { data: messages, error } = await supabaseClient
+        .from('messages')
+        .select('*')
+        .eq('room_id', currentChatRoom)
+        .order('created_at', { ascending: true });
+      
+      if (error) throw error;
+      
+      if (messages && messages.length > 0) {
+        messages.forEach(msg => {
+          addMessageToChat(msg.text, msg.sender);
+        });
+      } else {
+        addMessageToChat(`Hello! I'm ${currentDoctor.name}. How can I help you today?`, 'doctor');
+      }
+      
+      if (chatSubscription) {
+        supabaseClient.removeChannel(chatSubscription);
+      }
+      
+      chatSubscription = supabaseClient
+        .channel(`room:${currentChatRoom}`)
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `room_id=eq.${currentChatRoom}`
+        }, (payload) => {
+          addMessageToChat(payload.new.text, payload.new.sender);
+        })
+        .subscribe();
+        
+    } catch (error) {
+      console.error('Chat error:', error);
+      alert('Error loading messages.');
+    }
+  };
+  
+  window.openChatWithPatient = async function(patientId, patientName) {
+    currentDoctor = allDoctors.find(d => d.email === currentUser.email);
+    if (!currentDoctor) {
+      alert('Doctor profile not found');
+      return;
+    }
+    currentChatRoom = `doctor_${currentDoctor.id}_patient_${patientId}`;
+    document.getElementById('chatDoctorName').innerText = `Chat with ${patientName}`;
+    document.getElementById('chatModal').classList.add('active');
+    showChatView();
+    
+    document.getElementById('chatMessages').innerHTML = '';
+    
+    try {
+      const { data: messages, error } = await supabaseClient
+        .from('messages')
+        .select('*')
+        .eq('room_id', currentChatRoom)
+        .order('created_at', { ascending: true });
+      
+      if (error) throw error;
+      
+      if (messages && messages.length > 0) {
+        messages.forEach(msg => {
+          addMessageToChat(msg.text, msg.sender);
+        });
+      }
+      
+      if (chatSubscription) {
+        supabaseClient.removeChannel(chatSubscription);
+      }
+      
+      chatSubscription = supabaseClient
+        .channel(`room:${currentChatRoom}`)
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `room_id=eq.${currentChatRoom}`
+        }, (payload) => {
+          addMessageToChat(payload.new.text, payload.new.sender);
+        })
+        .subscribe();
+        
+    } catch (error) {
+      console.error('Error opening patient chat:', error);
+      alert('Error loading messages.');
+    }
+  };
+  
+  function showChatView() {
+    document.getElementById('patientListView').style.display = 'none';
+    document.getElementById('chatView').style.display = 'flex';
+  }
+  
+  function showPatientListView() {
+    document.getElementById('patientListView').style.display = 'block';
+    document.getElementById('chatView').style.display = 'none';
+  }
+  
+  window.closeChat = function() {
+    if (chatSubscription) {
+      supabaseClient.removeChannel(chatSubscription);
+      chatSubscription = null;
+    }
+    document.getElementById('chatModal').classList.remove('active');
+    currentChatRoom = null;
+  };
+  
+  window.sendChatMessage = async function() {
+    if (!currentUser || !currentDoctor || !currentChatRoom) {
+      alert('You must be logged in and have a chat open.');
+      return;
+    }
+    
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    try {
+      const { error } = await supabaseClient
+        .from('messages')
+        .insert([{
+          room_id: currentChatRoom,
+          sender: userType === 'doctor' ? 'doctor' : 'patient',
+          text: message,
+          doctor_name: currentDoctor.name
+        }]);
+      
+      if (error) throw error;
+      input.value = '';
+      
+    } catch (error) {
+      console.error('Send error:', error);
+      alert('Failed to send message.');
+    }
+  };
+  
+  function addMessageToChat(text, sender) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${sender === 'patient' ? 'patient' : 'doctor'}`;
+    messageDiv.innerHTML = `<div class="message-bubble">${text}</div>`;
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+  
+  // Update window.onclick to include chat modal
+  window.onclick = function(event) {
+    if (event.target.classList.contains('chat-modal')) {
+      closeChat();
+    }
+    if (event.target.classList.contains('appointment-modal')) {
+      closeAppointment();
+    }
+    if (event.target.classList.contains('auth-modal')) {
+      closeAuthModal();
+    }
+    if (event.target.classList.contains('review-modal')) {
+      closeReviewModal();
+    }
+    if (event.target.classList.contains('reviews-modal')) {
+      closeReviewsModal();
+    }
+  };
+
+  // Open appointment modal (updated with min date and async slot loading)
+  window.openAppointment = async function(doctorId) {
+    if (!currentUser) {
+      alert('Please login to book appointments');
+      openAuthModal();
+      return;
+    }
+    if (userType !== 'patient') {
+      alert('Only patients can book appointments');
+      return;
+    }
+    
+    currentDoctor = allDoctors.find(d => d.id === doctorId);
+    if (!currentDoctor) return;
+    
+    document.getElementById('appointmentDoctorName').innerHTML = `Book Appointment with ${currentDoctor.name}`;
+    document.getElementById('appointmentDoctorSpecialty').innerHTML = currentDoctor.specialty;
+    
+    // Set min date to today and default value to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('appointmentDate').value = today;
+    document.getElementById('appointmentDate').min = today;
+    
+    document.getElementById('appointmentModal').classList.add('active');
+    
+    document.getElementById('patientName').value = currentUser.name || '';
+    document.getElementById('patientEmail').value = currentUser.email || '';
+    document.getElementById('patientPhone').value = currentUser.phone || '';
+    
+    // Load slots for today
+    await loadSlotsForDate();
+  };
+
+  window.closeAppointment = function() {
+    document.getElementById('appointmentModal').classList.remove('active');
+  };
+
+  window.selectTime = function(element) {
+    document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+    element.classList.add('selected');
+  };
+
+  window.bookAppointment = async function() {
+    const name = document.getElementById('patientName').value;
+    const email = document.getElementById('patientEmail').value;
+    const phone = document.getElementById('patientPhone').value;
+    const date = document.getElementById('appointmentDate').value;
+    const timeElement = document.querySelector('.time-slot.selected');
+    const time = timeElement ? timeElement.textContent : null;
+    const reason = document.getElementById('appointmentReason').value;
+
+    if (!name || !email || !phone || !date || !time) {
+      alert('Please fill all fields and select a time');
+      return;
+    }
+
+    try {
+      const { error } = await supabaseClient.from('appointments').insert([{
+        patient_name: name,
+        patient_email: email,
+        patient_phone: phone,
+        doctor_id: currentDoctor.id,
+        doctor_name: currentDoctor.name,
+        appointment_date: date,
+        appointment_time: time,
+        reason: reason || 'Not specified'
+      }]);
+
+      if (error) throw error;
+
+      // ===== SEND CONFIRMATION EMAIL =====
+      try {
+        await fetch('https://xywyheflpidhpbhxpyqm.supabase.co/functions/v1/send-contact-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5d3loZWZscGlkaHBiaHhweXFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMjcwNTAsImV4cCI6MjA4ODkwMzA1MH0.nvJAIvfFT_OdSljfTstukeIHp6ivEkhoC-veOuQDPVk'
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            message: `Your appointment with ${currentDoctor.name} on ${date} at ${time} has been confirmed.`,
+            type: 'appointment'
+          })
+        });
+        console.log('Confirmation email sent');
+      } catch (emailErr) {
+        console.error('Email sending failed:', emailErr);
+        // Don't block the booking
+      }
+
+      alert(`Appointment booked successfully with ${currentDoctor.name} on ${date} at ${time}!`);
+      closeAppointment();
+
+      if (userType === 'doctor' && currentDoctor.email === currentUser.email) {
+        await loadDoctorAppointments();
+      }
+
+      document.getElementById('patientName').value = '';
+      document.getElementById('patientEmail').value = '';
+      document.getElementById('patientPhone').value = '';
+      document.getElementById('appointmentDate').value = '';
+      document.getElementById('appointmentReason').value = '';
+      document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+
+    } catch (error) {
+      console.error('Booking error:', error);
+      alert('Failed to book appointment: ' + error.message);
+    }
+  };
+
+  // ===========================================
+  // ASYNC LOAD SLOTS FOR DATE (IMPROVED)
+  // ===========================================
+  window.loadSlotsForDate = async function() {
+    const dateInput = document.getElementById('appointmentDate');
+    if (!dateInput) return;
+    const selectedDate = dateInput.value;
+    if (!selectedDate) return;
+
+    if (!currentDoctor) {
+      console.warn('No doctor selected');
+      return;
+    }
+
+    const doctorId = currentDoctor.uuid || currentDoctor.id;
+    console.log('Loading slots for doctor ID:', doctorId, 'date:', selectedDate);
+
+    // Get day of week (0 = Sunday)
+    const dayOfWeek = new Date(selectedDate).getDay();
+    console.log('Day of week:', dayOfWeek);
+
+    // Fetch doctor availability for that day
+    let availability = null;
+    try {
+      const { data, error } = await supabaseClient
+        .from('doctor_availability')
+        .select('*')
+        .eq('doctor_id', doctorId)
+        .eq('day_of_week', dayOfWeek)
+        .maybeSingle();
+      if (error) throw error;
+      availability = data;
+      console.log('Availability fetched:', availability);
+    } catch (err) {
+      console.error('Error fetching availability:', err);
+    }
+
+    if (!availability || !availability.is_available) {
+      document.getElementById('timeSlotsContainer').innerHTML = '<div class="text-muted">Doctor not available on this day</div>';
+      return;
+    }
+
+    // Fetch existing appointments for that doctor on that date
+    let bookedSlots = [];
+    try {
+      const { data, error } = await supabaseClient
+        .from('appointments')
+        .select('appointment_time')
+        .eq('doctor_id', doctorId)
+        .eq('appointment_date', selectedDate);
+      if (!error && data) {
+        bookedSlots = data.map(apt => apt.appointment_time);
+      }
+      console.log('Booked slots:', bookedSlots);
+    } catch (err) {
+      console.error('Error fetching appointments:', err);
+    }
+
+    // Helper to format time to HH:MM
+    function formatTime(timeStr) {
+      // timeStr is like "09:00" or "09:00:00"
+      return timeStr.substring(0, 5);
+    }
+
+    const start = formatTime(availability.start_time);
+    const end = formatTime(availability.end_time);
+    const slots = [];
+    let current = new Date(`2000-01-01T${start}:00`);
+    const endTime = new Date(`2000-01-01T${end}:00`);
+    while (current < endTime) {
+      const timeStr = current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+      slots.push(timeStr);
+      current.setMinutes(current.getMinutes() + 30);
+    }
+
+    // Filter out booked slots
+    const availableSlots = slots.filter(slot => !bookedSlots.includes(slot));
+    console.log('Available slots:', availableSlots);
+
+    // Render slots
+    const slotsHtml = availableSlots.map(t => 
+      `<span class="time-slot" onclick="selectTime(this)">${t}</span>`
+    ).join('');
+
+    document.getElementById('timeSlotsContainer').innerHTML = slotsHtml || '<div class="text-muted">No available slots for this day</div>';
+  };
+
+  </script>
+</body>
+</html>

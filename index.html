@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auscura | AI-Powered Respiratory Sound Analysis</title>
+
+  <!-- Fonts + Bootstrap -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Righteous&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="static/css/style.css">
+  <style>
+    /* ===== Hero auth buttons (glassmorphism) ===== */
+    .hero-auth-buttons {
+      position: absolute;
+      top: 100px;
+      right: 30px;
+      z-index: 100;
+      display: flex;
+      gap: 12px;
+    }
+    .hero-btn-login {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      color: white;
+      padding: 8px 28px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .hero-btn-login:hover {
+      background: white;
+      color: var(--primary);
+      border-color: white;
+      transform: translateY(-2px);
+    }
+    .hero-btn-register {
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8));
+      border: none;
+      color: var(--primary);
+      padding: 8px 28px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+    .hero-btn-register:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .hero-user-info {
+      position: absolute;
+      top: 100px;
+      right: 30px;
+      z-index: 100;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 8px 20px;
+      border-radius: 50px;
+    }
+    .hero-user-greeting {
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .hero-logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: white;
+      padding: 5px 20px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .hero-logout-btn:hover {
+      background: #f44336;
+      border-color: #f44336;
+      transform: translateY(-2px);
+    }
+    @media (max-width: 768px) {
+      .hero-auth-buttons, .hero-user-info {
+        top: 15px;
+        right: 15px;
+      }
+      .hero-btn-login, .hero-btn-register {
+        padding: 5px 18px;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* ===== NEUMORPHIC AUTH MODAL ===== */
+    .auth-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.55);
+      z-index: 20000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    .auth-modal.active { display: flex; }
+
+    /* Neumorphic color palette */
+    .auth-modal {
+      --nm-bg: #d1e8ff;
+      --nm-shadow-light: #f0fbff;
+      --nm-shadow-dark: #a6b9cc;
+      --nm-accent: #0077b6;
+      --nm-text: #334e68;
+      --nm-text-secondary: #70869d;
+    }
+
+    /* Close overlay on backdrop click */
+    .auth-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+    }
+
+    /* The sliding neumorphic window */
+    .auth-window {
+      position: relative;
+      background-color: var(--nm-bg);
+      border-radius: 30px;
+      box-shadow: 12px 12px 24px var(--nm-shadow-dark),
+                  -12px -12px 24px var(--nm-shadow-light);
+      width: 768px;
+      max-width: 95vw;
+      min-height: 540px;
+      overflow: hidden;
+      animation: nmSlideUp 0.4s ease;
+    }
+
+    @keyframes nmSlideUp {
+      from { opacity: 0; transform: translateY(40px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)   scale(1);    }
+    }
+
+    /* Close button */
+    .nm-close-btn {
+      position: absolute;
+      top: 15px; right: 18px;
+      z-index: 300;
+      background: var(--nm-bg);
+      border: none;
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--nm-text);
+      box-shadow: 4px 4px 8px var(--nm-shadow-dark),
+                  -4px -4px 8px var(--nm-shadow-light);
+      transition: all 0.2s;
+    }
+    .nm-close-btn:hover { color: #f44336; }
+
+    /* Form panels */
+    .nm-form-container {
+      position: absolute;
+      top: 0; height: 100%;
+      width: 50%;
+      background-color: var(--nm-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 28px;
+      text-align: center;
+      transition: all 0.6s ease-in-out;
+    }
+
+    .nm-sign-in { left: 0; z-index: 2; }
+    .nm-sign-up { left: 0; opacity: 0; z-index: 1; }
+
+    .auth-window.right-panel-active .nm-sign-in {
+      transform: translateX(100%); opacity: 0;
+    }
+    .auth-window.right-panel-active .nm-sign-up {
+      transform: translateX(100%); opacity: 1; z-index: 5;
+      animation: nmShow 0.6s;
+    }
+    @keyframes nmShow {
+      0%,49.99%{ opacity:0; z-index:1; }
+      50%,100% { opacity:1; z-index:5; }
+    }
+
+    /* Overlay (sliding colored panel) */
+    .nm-overlay-container {
+      position: absolute;
+      top: 0; left: 50%;
+      width: 50%; height: 100%;
+      z-index: 100;
+      overflow: hidden;
+      border-top-left-radius: 100px;
+      border-bottom-left-radius: 100px;
+      transition: transform 0.6s ease-in-out, border-radius 0.6s ease-in-out;
+    }
+    .auth-window.right-panel-active .nm-overlay-container {
+      transform: translateX(-100%);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-top-right-radius: 100px;
+      border-bottom-right-radius: 100px;
+    }
+    .nm-overlay {
+      background: linear-gradient(to right, #0077b6, #48cae4);
+      position: relative;
+      left: -100%; height: 100%; width: 200%;
+      transform: translateX(0);
+      transition: transform 0.6s ease-in-out;
+    }
+    .auth-window.right-panel-active .nm-overlay { transform: translateX(50%); }
+
+    .nm-overlay-panel {
+      position: absolute;
+      top: 0; height: 100%; width: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 0 30px; text-align: center; color: white;
+      transition: transform 0.6s ease-in-out;
+    }
+    .nm-overlay-left  { transform: translateX(-20%); }
+    .nm-overlay-right { right: 0; transform: translateX(0); }
+    .auth-window.right-panel-active .nm-overlay-left  { transform: translateX(0); }
+    .auth-window.right-panel-active .nm-overlay-right { transform: translateX(20%); }
+
+    .nm-overlay-panel h2 {
+      font-family: 'Righteous', cursive;
+      font-size: 1.8rem; margin-bottom: 12px;
+    }
+    .nm-overlay-panel p {
+      font-size: 0.9rem; opacity: 0.9; margin-bottom: 20px; line-height: 1.5;
+    }
+
+    /* Neumorphic form elements */
+    .nm-form-container h2 {
+      font-family: 'Righteous', cursive;
+      font-size: 1.6rem;
+      color: var(--nm-text);
+      margin-bottom: 6px;
+    }
+    .nm-form-container .nm-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .nm-tab {
+      flex: 1;
+      padding: 7px 0;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      background: var(--nm-bg);
+      color: var(--nm-text-secondary);
+      box-shadow: 4px 4px 8px var(--nm-shadow-dark),
+                  -4px -4px 8px var(--nm-shadow-light);
+      transition: all 0.25s;
+    }
+    .nm-tab.active {
+      background: var(--nm-accent);
+      color: white;
+      box-shadow: inset 3px 3px 6px rgba(0,0,0,0.25),
+                  inset -2px -2px 5px rgba(255,255,255,0.15);
+    }
+
+    .nm-input-group {
+      width: 100%;
+      position: relative;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    .nm-input-group i {
+      position: absolute;
+      left: 18px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--nm-text-secondary);
+      font-size: 13px;
+      pointer-events: none;
+      transition: color 0.3s;
+    }
+    .nm-input-group input,
+    .nm-input-group select {
+      width: 100%;
+      padding: 11px 14px 11px 42px;
+      border: none;
+      border-radius: 50px;
+      background: var(--nm-bg);
+      color: var(--nm-text);
+      font-size: 13px;
+      outline: none;
+      box-shadow: inset 5px 5px 9px var(--nm-shadow-dark),
+                  inset -5px -5px 9px var(--nm-shadow-light);
+      transition: box-shadow 0.3s;
+    }
+    .nm-input-group select { padding-left: 42px; cursor: pointer; }
+    .nm-input-group input::placeholder { color: var(--nm-text-secondary); }
+    .nm-input-group input:focus {
+      box-shadow: inset 3px 3px 7px var(--nm-shadow-dark),
+                  inset -3px -3px 7px var(--nm-shadow-light);
+    }
+    .nm-input-group input:focus ~ i { color: var(--nm-accent); }
+
+    .nm-scroll-area {
+      width: 100%;
+      max-height: 340px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .nm-scroll-area::-webkit-scrollbar { width: 5px; }
+    .nm-scroll-area::-webkit-scrollbar-thumb {
+      background: var(--nm-shadow-dark); border-radius: 4px;
+    }
+
+    /* Neumorphic buttons */
+    .nm-btn {
+      border-radius: 20px;
+      border: none;
+      padding: 11px 38px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--nm-bg);
+      color: var(--nm-accent);
+      box-shadow: 6px 6px 12px var(--nm-shadow-dark),
+                  -6px -6px 12px var(--nm-shadow-light);
+      margin-top: 8px;
+    }
+    .nm-btn:active {
+      transform: scale(0.96);
+      box-shadow: inset 4px 4px 8px rgba(0,0,0,0.2),
+                  inset -4px -4px 8px rgba(255,255,255,0.1);
+    }
+    .nm-btn.ghost {
+      background: transparent;
+      border: 1.5px solid white;
+      color: white;
+      box-shadow: none;
+    }
+    .nm-btn.ghost:hover { background: rgba(255,255,255,0.12); }
+
+    .nm-footer-link {
+      font-size: 12px;
+      color: var(--nm-text-secondary);
+      margin-top: 8px;
+      display: inline-block;
+    }
+    .nm-footer-link a {
+      color: var(--nm-accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Auth status */
+    .nm-status {
+      margin-top: 8px;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      display: none;
+    }
+    .nm-status.error { color: #f44336; background: rgba(244,67,54,0.08); display: block; }
+    .nm-status.success { color: #4caf50; background: rgba(76,175,80,0.08); display: block; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .auth-window { min-height: auto; }
+      .nm-form-container { position: relative; width: 100%; opacity: 1 !important; transform: none !important; }
+      .nm-sign-up  { display: none; }
+      .auth-window.right-panel-active .nm-sign-up  { display: flex; }
+      .auth-window.right-panel-active .nm-sign-in  { display: none; }
+      .nm-overlay-container { display: none; }
+      .nm-mobile-toggle { display: block; font-size: 12px; color: var(--nm-accent); margin-top: 10px; cursor: pointer; font-weight: 600; }
+    }
+    .nm-mobile-toggle { display: none; }
+
+    /* Legacy .form-group used in register forms */
+    .nm-form-container .form-group { margin-bottom: 0; }
+    .nm-form-container .form-group label {
+      display: block; font-size: 11px; font-weight: 600;
+      color: var(--nm-text-secondary); margin-bottom: 3px; margin-left: 14px;
+    }
+    :root {
+      --primary: #2c5aa0;
+      --primary-dark: #1e3d72;
+      --secondary: #4fc3f7;
+      --accent: #00bcd4;
+      --success: #4caf50;
+      --danger: #f44336;
+      --warning: #ff9800;
+      --dark: #263238;
+      --light: #f8fafc;
+    }
+
+    /* ============================================================
+       CLAYMORPHISM ENHANCEMENTS — index.html
+       ============================================================ */
+
+    /* Clay palette */
+    :root {
+      --clay-light:   #f4f9ff;
+      --clay-shadow-out: 8px 8px 20px 0 #b0c4de,
+                         inset -6px -6px 14px 0 #b8cce4,
+                         inset  6px  6px 14px 0 #ffffff;
+      --clay-shadow-sm:  5px 5px 12px 0 #b0c4de,
+                         inset -4px -4px 10px 0 #b8cce4,
+                         inset  4px  4px 10px 0 #ffffff;
+      --clay-shadow-primary: 5px 5px 14px 0 #7a9fc8,
+                              inset -5px -5px 12px 0 #1a3870,
+                              inset  5px  5px 12px 0 #60a0e0;
+    }
+
+    /* Body & Background */
+    body {
+      background: linear-gradient(145deg, #eaf3ff 0%, #ddeeff 50%, #e8f7f0 100%);
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(234, 243, 255, 0.97) !important;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 4px 18px rgba(100, 140, 200, 0.18),
+                  inset 0 -2px 6px rgba(255,255,255,0.7) !important;
+      border-bottom: 1.5px solid rgba(255,255,255,0.75);
+    }
+    .navbar-brand {
+      font-family: 'Righteous', cursive;
+      font-size: 1.8rem !important;
+      background: linear-gradient(135deg, #2c5aa0, #00bcd4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .navbar-nav .nav-link {
+      border-radius: 30px;
+      padding: 6px 18px !important;
+      font-weight: 500;
+      transition: all 0.25s ease;
+    }
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      background: linear-gradient(135deg, #2c5aa0, #00bcd4);
+      color: white !important;
+      box-shadow: var(--clay-shadow-primary);
+      transform: translateY(-2px);
+    }
+
+    /* Hero buttons */
+    .hero-buttons .btn {
+      border-radius: 50px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .hero-buttons .btn-primary {
+      box-shadow: 5px 5px 16px rgba(0,0,0,0.25),
+                  inset -3px -3px 8px rgba(0,0,0,0.2),
+                  inset  3px  3px 8px rgba(255,255,255,0.2);
+    }
+    .hero-buttons .btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 8px 10px 24px rgba(0,0,0,0.3),
+                  inset -3px -3px 8px rgba(0,0,0,0.15),
+                  inset  3px  3px 8px rgba(255,255,255,0.3);
+    }
+
+    /* About section feature items */
+    .feature-item {
+      background: var(--clay-light);
+      border-radius: 22px;
+      box-shadow: var(--clay-shadow-sm);
+      border: none;
+      transition: all 0.3s ease;
+    }
+    .feature-item:hover {
+      transform: translateY(-6px);
+      box-shadow: 8px 8px 22px 0 #9ab0d2,
+                  inset -4px -4px 10px 0 #b0c4de,
+                  inset  4px  4px 10px 0 #ffffff;
+    }
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--clay-light);
+      box-shadow: var(--clay-shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mission / Vision cards */
+    .mission-card,
+    .vision-card {
+      border-radius: 28px;
+      background: var(--clay-light);
+      box-shadow: var(--clay-shadow-out);
+      border: none;
+      transition: all 0.3s ease;
+    }
+    .mission-card:hover,
+    .vision-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 10px 10px 28px 0 #9ab5d4,
+                  inset -6px -6px 14px 0 #b8cce4,
+                  inset  6px  6px 14px 0 #ffffff;
+    }
+
+    /* Disease cards */
+    .disease-card {
+      background: var(--clay-light);
+      border-radius: 28px;
+      box-shadow: var(--clay-shadow-out);
+      border: none;
+      transition: all 0.35s ease;
+    }
+    .disease-card:hover {
+      transform: translateY(-14px) scale(1.03);
+      box-shadow: 12px 12px 32px 0 #9ab5d4,
+                  inset -8px -8px 18px 0 #b0c8e8,
+                  inset  8px  8px 18px 0 #ffffff;
+    }
+    .disease-card::before {
+      border-radius: 28px 28px 0 0;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(135deg, #2c5aa0, #00bcd4);
+      border: none;
+      border-radius: 40px;
+      box-shadow: var(--clay-shadow-primary);
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 8px 8px 20px 0 #7a9fc8,
+                  inset -5px -5px 12px 0 #1a3870,
+                  inset  5px  5px 12px 0 #80c0f0;
+      background: linear-gradient(135deg, #2c5aa0, #00bcd4);
+    }
+    .btn-primary:active {
+      box-shadow: inset 4px 4px 10px rgba(0,0,0,0.2),
+                  inset -4px -4px 10px rgba(255,255,255,0.1);
+      transform: scale(0.97);
+    }
+    .btn-outline-light {
+      border-radius: 40px;
+      font-weight: 600;
+      transition: all 0.25s;
+    }
+    .btn-outline-light:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255,255,255,0.25);
+    }
+
+    /* Section title */
+    .section-title {
+      font-family: 'Righteous', cursive;
+    }
+
+    /* Contact */
+    .contact-card {
+      background: var(--clay-light);
+      border-radius: 28px;
+      box-shadow: var(--clay-shadow-out);
+      border: none;
+    }
+    .contact-item {
+      background: rgba(255,255,255,0.75);
+      border-radius: 16px;
+      box-shadow: 3px 3px 8px 0 #c8d8ec,
+                  inset -2px -2px 6px 0 #c4d4e8,
+                  inset  2px  2px 6px 0 #ffffff;
+    }
+    .contact-form .form-control {
+      background: var(--clay-light);
+      border: none;
+      border-radius: 16px;
+      box-shadow: inset 3px 3px 8px #bfcfe4,
+                  inset -3px -3px 8px #ffffff;
+    }
+    .contact-form .form-control:focus {
+      box-shadow: inset 3px 3px 8px #b0c2dc,
+                  inset -3px -3px 8px #ffffff,
+                  0 0 0 3px rgba(44,90,160,0.12);
+      outline: none;
+    }
+
+    /* Neumorphic auth modal — clay upgrade */
+    .auth-window {
+      border-radius: 36px;
+      box-shadow: 14px 14px 28px #a8bcd0,
+                  -14px -14px 28px #f2faff !important;
+      background-color: #dceeff !important;
+    }
+    .nm-close-btn {
+      border-radius: 50%;
+      box-shadow: 4px 4px 8px #a8bcd0,
+                  -4px -4px 8px #f2faff !important;
+    }
+    .nm-tab {
+      border-radius: 20px;
+      box-shadow: 4px 4px 8px #a8bcd0, -4px -4px 8px #f2faff !important;
+    }
+    .nm-input-group input,
+    .nm-input-group select {
+      border-radius: 50px;
+      box-shadow: inset 5px 5px 10px #a8bcd0,
+                  inset -5px -5px 10px #f2faff !important;
+    }
+    .nm-btn:not(.ghost) {
+      border-radius: 24px;
+      box-shadow: 6px 6px 12px #a8bcd0,
+                  -6px -6px 12px #f2faff !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Floating Background Elements -->
+  <div class="floating-elements">
+    <div class="floating-element element-1">🫁</div>
+    <div class="floating-element element-2">❤️</div>
+    <div class="floating-element element-3">🌬️</div>
+    <div class="floating-element element-4">💙</div>
+    <div class="floating-element element-5">🩺</div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">
+        <span class="brand-icon">🩺</span>
+        <span class="brand-text">AUSCURA</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#diseases">Diseases</a></li>
+          <li class="nav-item"><a class="nav-link" href="upload.html">Analyze</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="doctors.html">Consult a Doctor</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION with auth buttons on background -->
+  <section class="hero d-flex align-items-center justify-content-center text-center" style="position: relative;">
+    <!-- Auth buttons (glass style) -->
+    <div id="authButtons" class="hero-auth-buttons">
+      <button class="hero-btn-login" id="loginBtn">Login</button>
+      <button class="hero-btn-register" id="registerBtn">Register</button>
+    </div>
+    <div id="userInfo" class="hero-user-info" style="display: none;">
+      <span class="hero-user-greeting" id="userNameDisplay"></span>
+      <button class="hero-logout-btn" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="hero-content">
+      <div class="stethoscope-icon">
+        <i class="fas fa-stethoscope"></i>
+      </div>
+      <h1 class="display-3 fw-bold hero-title">AUSCURA</h1>
+      <p class="lead hero-subtitle">AI-Powered Respiratory Sound Analysis for Modern Healthcare</p>
+      <p class="hero-description">Advanced auscultation technology meets artificial intelligence for accurate respiratory disease detection</p>
+      <div class="hero-buttons">
+        <a href="#diseases" class="btn btn-primary btn-lg mt-3 px-4 py-3">
+          <i class="fas fa-lungs me-2"></i>Explore Diseases
+        </a>
+        <a href="upload.html" class="btn btn-outline-light btn-lg mt-3 px-4 py-3 ms-3">
+          <i class="fas fa-upload me-2"></i>Analyze Sounds
+        </a>
+      </div>
+    </div>
+    <div class="hero-wave">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+        <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION (unchanged) -->
+  <section id="about" class="py-5 about-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <h2 class="fw-bold section-title">About Auscura</h2>
+        <p class="section-subtitle">Revolutionizing Respiratory Diagnostics</p>
+      </div>
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <div class="about-content">
+            <p><strong>Auscura</strong> is an intelligent diagnostic platform that integrates biomedical engineering and artificial intelligence to assist in early detection of respiratory disorders.</p>
+            
+            <p>The system analyzes lung auscultation sounds acquired from an electronic stethoscope, using advanced signal processing techniques and machine learning models to classify diseases such as Chronic Obstructive Pulmonary Disease (COPD), Asthma, and Pneumonia, along with recognizing Healthy lung function.</p>
+            
+            <p>The ultimate goal of Auscura is to create an accessible web-based diagnostic tool that connects to an IoT-enabled stethoscope for real-time screening, helping clinicians and patients perform early respiratory assessments remotely.</p>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="about-features">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-stethoscope"></i>
+              </div>
+              <div class="feature-text">
+                <h5>Advanced Auscultation</h5>
+                <p>Digital stethoscope integration for precise sound capture</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <div class="feature-text">
+                <h5>AI-Powered Analysis</h5>
+                <p>Machine learning algorithms for accurate diagnosis</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-bolt"></i>
+              </div>
+              <div class="feature-text">
+                <h5>Real-time Processing</h5>
+                <p>Instant results with advanced signal processing</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mission & Vision Cards -->
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <div class="mission-card">
+            <div class="card-icon">
+              <i class="fas fa-bullseye"></i>
+            </div>
+            <h4 class="fw-bold">Our Mission</h4>
+            <p>To empower healthcare professionals with AI-assisted diagnostic tools that enable faster, more accurate detection of respiratory conditions, improving global access to preventive healthcare and remote monitoring.</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="vision-card">
+            <div class="card-icon">
+              <i class="fas fa-eye"></i>
+            </div>
+            <h4 class="fw-bold">Our Vision</h4>
+            <p>To revolutionize respiratory diagnostics by integrating real-time biosignal analysis and AI, making early detection effortless, affordable, and accessible for everyone worldwide.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISEASES SECTION (unchanged) -->
+  <section id="diseases" class="py-5 diseases-section">
+    <div class="container text-center">
+      <div class="section-header">
+        <h2 class="fw-bold section-title">Respiratory Conditions We Detect</h2>
+        <p class="section-subtitle">Advanced AI analysis for common respiratory diseases</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="disease-card copd-card">
+            <div class="disease-icon">
+              <i class="fas fa-wind"></i>
+            </div>
+            <h5 class="disease-title">COPD</h5>
+            <p class="disease-description">Chronic inflammation causing airflow blockage and breathing difficulty</p>
+            <button class="btn btn-outline-primary learn-more" data-target="copd">
+              <i class="fas fa-info-circle me-2"></i>Learn More
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="disease-card asthma-card">
+            <div class="disease-icon">
+              <i class="fas fa-lungs"></i>
+            </div>
+            <h5 class="disease-title">Asthma</h5>
+            <p class="disease-description">Recurrent airway narrowing triggered by allergens or exertion</p>
+            <button class="btn btn-outline-success learn-more" data-target="asthma">
+              <i class="fas fa-info-circle me-2"></i>Learn More
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="disease-card pneumonia-card">
+            <div class="disease-icon">
+              <i class="fas fa-virus"></i>
+            </div>
+            <h5 class="disease-title">Pneumonia</h5>
+            <p class="disease-description">Infection causing fluid-filled air sacs and impaired gas exchange</p>
+            <button class="btn btn-outline-danger learn-more" data-target="pneumonia">
+              <i class="fas fa-info-circle me-2"></i>Learn More
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="disease-card healthy-card">
+            <div class="disease-icon">
+              <i class="fas fa-heart"></i>
+            </div>
+            <h5 class="disease-title">Healthy</h5>
+            <p class="disease-description">Normal, smooth, and consistent breath sounds without abnormalities</p>
+            <button class="btn btn-outline-secondary learn-more" data-target="healthy">
+              <i class="fas fa-info-circle me-2"></i>Learn More
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPANDED INFO PANEL -->
+    <div id="info-panel" class="container-fluid py-5 mt-5 info-panel d-none" role="region" aria-live="polite">
+      <div class="container">
+        <div id="info-content"></div>
+        <div class="text-center mt-4">
+          <button class="btn btn-outline-dark" id="collapseBtn">
+            <i class="fas fa-times me-2"></i>Collapse
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION (updated with functional form) -->
+  <section id="contact" class="py-5 contact-section">
+    <div class="container text-center">
+      <div class="section-header">
+        <h2 class="fw-bold section-title">Get In Touch</h2>
+        <p class="section-subtitle">Have questions? We're here to help</p>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="contact-card">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="contact-info">
+                  <div class="contact-item">
+                    <i class="fas fa-university"></i>
+                    <div>
+                      <strong>VIT Mumbai</strong>
+                      <p>Biomedical Engineering Department</p>
+                    </div>
+                  </div>
+                  <div class="contact-item">
+                    <i class="fas fa-users"></i>
+                    <div>
+                      <strong>Development Team</strong>
+                      <p>Chaitanya Ganguly & Research Team</p>
+                    </div>
+                  </div>
+                  <div class="contact-item">
+                    <i class="fas fa-stethoscope"></i>
+                    <div>
+                      <strong>Specialization</strong>
+                      <p>Respiratory Sound Analysis & AI Diagnostics</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="contact-form">
+                  <h5>Send us a Message</h5>
+                  <form id="contactForm">
+                    <div class="mb-3">
+                      <input type="text" id="contactName" class="form-control" placeholder="Your Name" required>
+                    </div>
+                    <div class="mb-3">
+                      <input type="email" id="contactEmail" class="form-control" placeholder="Your Email" required>
+                    </div>
+                    <div class="mb-3">
+                      <textarea id="contactMessage" class="form-control" rows="3" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" id="sendBtn">
+                      <i class="fas fa-paper-plane me-2"></i>Send Message
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER (unchanged) -->
+  <footer class="text-center py-4">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <span class="brand-icon">🩺</span>
+          <span class="brand-text">AUSCURA</span>
+        </div>
+        <p class="footer-tagline">Advanced Respiratory Sound Analysis</p>
+        <div class="footer-links">
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fas fa-envelope"></i></a>
+        </div>
+        <small>© 2025 Auscura | Developed by Chaitanya Ganguly & Team, Biomedical Engineering, VIT Mumbai</small>
+      </div>
+    </div>
+  </footer>
+
+
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <script>
+    // Disease data (unchanged – full data included)
+    const diseases = {
+      copd: {
+        color: "#1976D2",
+        title: "Chronic Obstructive Pulmonary Disease (COPD)",
+        def: `<h4>What is COPD?</h4>
+        <p>Chronic Obstructive Pulmonary Disease (COPD) is a long-term lung condition that causes breathing difficulties due to airflow blockage and lung tissue damage. It mainly includes two conditions — chronic bronchitis, which causes long-term cough and mucus production, and emphysema, which leads to destruction of the air sacs (alveoli) in the lungs. The disease is usually progressive and linked to long-term exposure to harmful particles or gases such as cigarette smoke or air pollution. According to the World Health Organization (WHO), COPD causes over 3 million deaths every year, making it one of the leading causes of death globally. Studies estimate that around 10% of adults worldwide suffer from COPD, and this number is expected to rise in the coming decades, especially in developing countries due to increasing air pollution and smoking rates.</p>`,
+        history: `<h5>History of COPD</h5>
+        <p>The understanding of COPD has evolved over several centuries. The earliest known descriptions of lungs affected by emphysema were made by Theophile Bonet in 1679. Later, in 1789, Matthew Baillie provided detailed illustrations of emphysematous lungs. The famous French physician René Laënnec, who invented the stethoscope in 1821, was among the first to describe emphysema as a distinct disease. Throughout the 19th and 20th centuries, doctors began linking chronic cough, mucus production, and breathlessness with exposure to smoke and dust. The term COPD itself became widely accepted in the mid-20th century when researchers realised that chronic bronchitis and emphysema often coexisted and led to similar breathing limitations. The widespread use of spirometry and improved medical imaging further helped define and diagnose COPD as we know it today.</p>`,
+        causes: `<h5>Causes of COPD</h5>
+        <p>The primary cause of COPD is long-term exposure to irritating gases or particulate matter, most commonly from cigarette smoke. In fact, smoking is responsible for the majority of COPD cases worldwide. However, COPD can also occur in non-smokers due to exposure to indoor air pollution from burning wood, coal, or other biomass fuels — especially in poorly ventilated homes. Outdoor air pollution, occupational exposure to chemical fumes, vapours, and dust, and genetic factors such as Alpha-1 Antitrypsin Deficiency also contribute to the disease. In some individuals, repeated childhood respiratory infections, premature birth, or poor lung development can increase susceptibility later in life. Over time, these irritants cause chronic inflammation in the airways, leading to narrowing of bronchial tubes, destruction of lung tissue, and reduced oxygen exchange — the hallmarks of COPD.</p>`,
+        symptoms: `<h5>Symptoms & Signs of COPD</h5>
+        <p>COPD develops gradually, and early symptoms are often mistaken for normal aging or smoker's cough. The most common symptoms include shortness of breath (especially during physical activity), persistent cough, and production of mucus (phlegm). Patients may also experience wheezing, chest tightness, and fatigue. As the disease progresses, breathing becomes more difficult, and individuals may struggle even with simple daily activities. Frequent lung infections, flare-ups (sudden worsening of symptoms), and weight loss in later stages are also common. Physical signs observed by doctors include reduced breath sounds, over-inflated chest (in emphysema), and laboured breathing using neck or shoulder muscles. In advanced stages, COPD can cause swelling of the ankles, blueness of the lips or fingertips (cyanosis), and other signs of oxygen deficiency. Recognizing these symptoms early and seeking medical help can slow disease progression and improve quality of life.</p>`
+      },
+      pneumonia: {
+        color: "#D32F2F",
+        title: "Pneumonia",
+        def: `<h4>What is Pneumonia?</h4>
+        <p>Pneumonia is an infection that inflames the air sacs (alveoli) in one or both lungs. These air sacs may fill with fluid or pus, leading to coughing with phlegm, fever, chills, and difficulty breathing. It can be caused by a variety of microorganisms including bacteria, viruses, or fungi. The most common bacterial cause is Streptococcus pneumoniae, while viral pneumonia is often caused by influenza viruses, RSV (Respiratory Syncytial Virus), or coronaviruses. According to the World Health Organization (WHO), pneumonia is one of the leading infectious causes of death globally, especially among children under the age of five and older adults. In 2019, WHO estimated that pneumonia killed approximately 2.5 million people worldwide, including over 740,000 children under five. Despite being preventable and treatable, pneumonia remains a major global health burden.</p>`,
+        history: `<h5>History of Pneumonia</h5>
+        <p>Pneumonia has been recognized since ancient times and was described by Hippocrates around 400 BC, who referred to it as a disease involving "peripneumonia." In the 19th century, advances in microscopy allowed scientists to identify specific bacteria responsible for pneumonia. In 1882, German physician Carl Friedländer discovered Klebsiella pneumoniae, and in 1886, Albert Frankel identified Streptococcus pneumoniae, which remains the most common cause of bacterial pneumonia today. The invention of antibiotics in the early 20th century, particularly penicillin, drastically reduced pneumonia-related deaths. Later, the introduction of vaccines — such as the pneumococcal and Haemophilus influenzae type b (Hib) vaccines — helped prevent millions of infections worldwide. Today, pneumonia research focuses on preventing antibiotic resistance, improving vaccines, and enhancing early diagnosis and treatment, especially in resource-limited settings.</p>`,
+        causes: `<h5>Causes of Pneumonia</h5>
+        <p>Pneumonia can be caused by a wide range of infectious agents, most commonly bacteria and viruses, and less frequently by fungi or parasites.</p>
+        <ul>
+          <li>Bacterial pneumonia is most often due to Streptococcus pneumoniae, Haemophilus influenzae, and Staphylococcus aureus.</li>
+          <li>Viral pneumonia is caused by influenza viruses, RSV, coronaviruses (including COVID-19), and adenoviruses.</li>
+          <li>Fungal pneumonia can occur in people with weakened immune systems, caused by fungi such as Pneumocystis jirovecii, Histoplasma, or Aspergillus.</li>
+        </ul>
+        <p>Risk factors include smoking, weakened immune system, chronic lung diseases like COPD or asthma, advanced age, malnutrition, and exposure to polluted air. The infection spreads through inhalation of airborne droplets released when an infected person coughs or sneezes, or through direct contact with contaminated surfaces. Once inside the lungs, these pathogens trigger inflammation and fluid buildup in the alveoli, reducing oxygen exchange and causing breathing difficulty.</p>`,
+        symptoms: `<h5>Symptoms & Signs of Pneumonia</h5>
+        <p>The symptoms of pneumonia can range from mild to severe depending on the cause, age, and overall health of the individual. Common symptoms include cough (often producing yellow or green phlegm), high fever, chills, chest pain when breathing or coughing, and shortness of breath. Other symptoms may include fatigue, sweating, loss of appetite, and in severe cases, bluish lips or fingertips due to lack of oxygen.</p>
+        <p>In older adults, symptoms may appear atypical — such as confusion, low body temperature, or general weakness — rather than high fever. In children, fast breathing, chest indrawing, and difficulty feeding are warning signs. On medical examination, doctors may hear crackling or bubbling sounds in the lungs using a stethoscope, and chest X-rays often confirm the diagnosis. Severe pneumonia can lead to complications such as pleural effusion (fluid around the lungs), sepsis, or respiratory failure if left untreated.</p>`
+      },
+      asthma: {
+        color: "#2E7D32",
+        title: "Asthma",
+        def: `<h4>What is Asthma?</h4>
+        <p>Asthma is a chronic respiratory disease that causes the airways in the lungs to become inflamed and narrowed, making it difficult to breathe. It is characterized by recurrent episodes of wheezing, breathlessness, chest tightness, and coughing, particularly at night or in the early morning. The severity and frequency of asthma symptoms can vary from person to person — some may have occasional mild symptoms, while others experience frequent, life-threatening attacks. According to the World Health Organization (WHO), asthma affected about 262 million people globally in 2019 and caused approximately 455,000 deaths. Despite being incurable, asthma can be effectively controlled with proper management and medication, allowing most people to live normal, active lives.</p>`,
+        history: `<h5>History of Asthma</h5>
+        <p>Asthma has been recognized as a distinct medical condition for thousands of years. The word "asthma" comes from the ancient Greek word meaning "panting" or "short of breath." The earliest reference to asthma symptoms dates back to Hippocrates (around 400 BC), who described episodes of breathlessness triggered by environmental and emotional factors. During the Middle Ages and Renaissance, physicians thought asthma was related to the heart or excess mucus in the lungs. In the 19th century, asthma was better understood as a disease of the airways rather than a purely psychological condition. By the early 20th century, with the discovery of bronchodilators and inhalers, treatment improved significantly. In recent decades, advances in medical research have revealed that asthma is primarily an inflammatory disease of the airways, driven by immune responses and environmental triggers — a discovery that has guided the modern use of inhaled corticosteroids and long-acting bronchodilators for control.</p>`,
+        causes: `<h5>Causes of Asthma</h5>
+        <p>Asthma develops due to a complex interaction of genetic and environmental factors. People with a family history of allergies or asthma are more likely to develop the condition. Common environmental triggers include pollen, dust mites, pet dander, mold, air pollution, smoke, cold air, and respiratory infections. Exercise, stress, and strong emotions can also trigger or worsen asthma attacks in some individuals. Certain occupational exposures, such as chemicals, fumes, and dust in workplaces, can lead to occupational asthma.</p>
+        <p>At a biological level, asthma causes chronic inflammation of the airways, leading to swelling, mucus buildup, and tightening of the surrounding muscles (bronchoconstriction). This combination narrows the air passages and restricts airflow, resulting in the characteristic wheezing and breathlessness.</p>`,
+        symptoms: `<h5>Symptoms & Signs of Asthma</h5>
+        <p>Asthma symptoms can occur suddenly (during an attack) or develop gradually. The most common symptoms include wheezing (a whistling sound while breathing), shortness of breath, chest tightness, and coughing, which often worsen at night or early in the morning. During an asthma attack, the person may struggle to speak or breathe properly and feel a sense of panic due to lack of air. Symptoms can be triggered or worsened by allergens, pollution, smoke, or physical activity.</p>
+        <p>On physical examination, doctors may detect prolonged exhalation, wheezing sounds, and reduced airflow in the lungs. In severe cases, lips or fingertips may turn bluish due to oxygen shortage (a sign called cyanosis). Persistent asthma, if not managed properly, can lead to airway remodeling and long-term lung function decline. However, with correct medication, avoidance of triggers, and regular monitoring, most people with asthma can manage their condition effectively and lead a healthy, active life.</p>`
+      },
+      healthy: {
+        color: "#455A64",
+        title: "Healthy Lungs",
+        def: `<h4>Healthy Lungs</h4>
+        <p>Healthy lungs are strong, flexible, and capable of efficiently exchanging oxygen and carbon dioxide with every breath. They contain millions of tiny air sacs called alveoli that expand and contract easily, allowing oxygen to enter the blood and carbon dioxide to leave the body. The airways of healthy lungs are clear, open, and free of inflammation or mucus buildup, ensuring smooth airflow. The surface of the airways is lined with tiny hair-like structures called cilia, which trap dust, germs, and pollutants and sweep them out of the respiratory tract. In healthy lungs, breathing feels effortless — you can perform physical activities, speak, and rest without any shortness of breath or discomfort. Healthy lungs also have strong natural defenses that protect against infections and environmental irritants.</p>`,
+        tips: `<h5>Tips to Keep Your Lungs Healthy</h5>
+        <ul>
+          <li><strong>Avoid Smoking:</strong> Smoking is the leading cause of lung damage and diseases like COPD and lung cancer. Avoid both active smoking and exposure to secondhand smoke.</li>
+          <li><strong>Exercise Regularly:</strong> Activities such as walking, swimming, or yoga improve lung capacity and strengthen respiratory muscles.</li>
+          <li><strong>Maintain Good Air Quality:</strong> Avoid polluted or dusty areas when possible. Use air purifiers at home if needed and wear a mask in heavy traffic or polluted environments.</li>
+          <li><strong>Practice Deep Breathing:</strong> Simple breathing exercises help expand the lungs fully and improve oxygen intake.</li>
+          <li><strong>Stay Hydrated:</strong> Drinking plenty of water keeps the mucosal lining in the lungs thin, helping them function better.</li>
+          <li><strong>Prevent Infections:</strong> Wash your hands regularly, avoid close contact with people who have colds or flu, and keep up with vaccines like flu and pneumonia shots.</li>
+          <li><strong>Eat a Balanced Diet:</strong> Include antioxidant-rich foods like fruits, vegetables, and nuts to support lung tissue repair and immunity.</li>
+          <li><strong>Regular Check-ups:</strong> If you experience persistent cough, wheezing, or shortness of breath, consult a doctor early for screening and prevention.</li>
+        </ul>`
+      }
+    };
+
+    const panel = document.getElementById("info-panel");
+    const content = document.getElementById("info-content");
+    const collapseBtn = document.getElementById("collapseBtn");
+
+    document.querySelectorAll(".learn-more").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.target;
+        const d = diseases[id];
+        let html = `<h3 class="fw-bold mb-3" style="color:${d.color};">${d.title}</h3>`;
+        if (id === 'copd' || id === 'pneumonia' || id === 'asthma') {
+          html += `<div class="mb-3">${d.def}</div><div class="mb-3">${d.history}</div><div class="mb-3">${d.causes}</div><div class="mb-3">${d.symptoms}</div>`;
+        } else if (id === 'healthy') {
+          html += `<div class="mb-3">${d.def}</div><div class="mb-3">${d.tips}</div>`;
+        }
+        content.innerHTML = html;
+        panel.classList.remove("d-none");
+        panel.classList.add("fade-in");
+        panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    collapseBtn.addEventListener("click", () => {
+      panel.classList.add("d-none");
+      content.innerHTML = "";
+    });
+
+    document.querySelectorAll('.floating-element').forEach(element => {
+      element.style.animationDelay = Math.random() * 20 + 's';
+    });
+  </script>
+
+  
+
+  <!-- CONTACT FORM SCRIPT (updated with Authorization header) -->
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('contactName').value;
+      const email = document.getElementById('contactEmail').value;
+      const message = document.getElementById('contactMessage').value;
+      const btn = document.getElementById('sendBtn');
+      const originalText = btn.innerHTML;
+      
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+      
+      try {
+        const response = await fetch('https://xywyheflpidhpbhxpyqm.supabase.co/functions/v1/send-contact-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5d3loZWZscGlkaHBiaHhweXFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMjcwNTAsImV4cCI6MjA4ODkwMzA1MH0.nvJAIvfFT_OdSljfTstukeIHp6ivEkhoC-veOuQDPVk'
+          },
+          body: JSON.stringify({ name, email, message })
+        });
+        
+        if (response.ok) {
+          alert('Thank you! Your message has been sent.');
+          document.getElementById('contactForm').reset();
+        } else {
+          const errorText = await response.text();
+          console.error('Function error:', errorText);
+          alert('Something went wrong. Please try again later.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Network error. Please check your connection.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    });
+  </script>
+
+  <!-- AUTH BAR SCRIPT (unchanged) -->
+  <script>
+    const SUPABASE_URL = 'https://xywyheflpidhpbhxpyqm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5d3loZWZscGlkaHBiaHhweXFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMjcwNTAsImV4cCI6MjA4ODkwMzA1MH0.nvJAIvfFT_OdSljfTstukeIHp6ivEkhoC-veOuQDPVk';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentUser = null;
+    let userType = null;
+    let authMode = 'login';
+    let currentAuthType = 'patient';
+
+    function loadSession() {
+      const storedUser = localStorage.getItem('auscura_user');
+      const storedType = localStorage.getItem('auscura_userType');
+      if (storedUser && storedType) {
+        try {
+          currentUser = JSON.parse(storedUser);
+          userType = storedType;
+          return true;
+        } catch (e) {
+          console.error('Failed to parse stored user', e);
+        }
+      }
+      return false;
+    }
+
+    function clearSession() {
+      localStorage.removeItem('auscura_user');
+      localStorage.removeItem('auscura_userType');
+    }
+
+    function updateAuthBar() {
+      const authButtonsDiv = document.getElementById('authButtons');
+      const userInfoDiv = document.getElementById('userInfo');
+      const userNameSpan = document.getElementById('userNameDisplay');
+      if (currentUser && userType) {
+        authButtonsDiv.style.display = 'none';
+        userInfoDiv.style.display = 'flex';
+        userNameSpan.innerText = `Hi, ${currentUser.name}`;
+      } else {
+        authButtonsDiv.style.display = 'flex';
+        userInfoDiv.style.display = 'none';
+      }
+    }
+
+    function openAuthModal() {
+      authMode = 'login';
+      document.getElementById('authModal').classList.add('active');
+      showLogin();
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.remove('active');
+    }
+
+    function showLogin() {
+      authMode = 'login';
+      const win = document.getElementById('authWindow');
+      if (win) win.classList.remove('right-panel-active');
+    }
+
+    function showRegister() {
+      authMode = 'register';
+      const win = document.getElementById('authWindow');
+      if (win) win.classList.add('right-panel-active');
+    }
+
+    window.switchAuthTab = function(type) {
+      currentAuthType = type;
+    };
+
+    window.registerPatient = async function() {
+      const name = document.getElementById('regPatientName').value;
+      const email = document.getElementById('regPatientEmail').value;
+      const phone = document.getElementById('regPatientPhone').value;
+      const password = document.getElementById('regPatientPassword').value;
+      if (!name || !email || !phone || !password) {
+        alert('Please fill all fields');
+        return;
+      }
+      try {
+        const { error } = await supabaseClient.from('patients').insert([{ name, email, phone, password }]);
+        if (error) throw error;
+        alert('Registration successful! Please login.');
+        showLogin();
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    async function uploadDoctorImage(file) {
+      if (!file) return null;
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `doctor-${fileName}`;
+      const { error } = await supabaseClient.storage.from('doctors-photos').upload(filePath, file);
+      if (error) throw error;
+      const { data: urlData } = supabaseClient.storage.from('doctors-photos').getPublicUrl(filePath);
+      return urlData.publicUrl;
+    }
+
+    window.registerDoctor = async function() {
+      const name = document.getElementById('regDoctorName').value;
+      const email = document.getElementById('regDoctorEmail').value;
+      const phone = document.getElementById('regDoctorPhone').value;
+      const specialty = document.getElementById('regDoctorSpecialty').value;
+      const qualification = document.getElementById('regDoctorQualification').value;
+      const experience = document.getElementById('regDoctorExperience').value;
+      const hospital = document.getElementById('regDoctorHospital').value;
+      const fee = document.getElementById('regDoctorFee').value;
+      const languages = document.getElementById('regDoctorLanguages').value.split(',').map(l => l.trim());
+      const password = document.getElementById('regDoctorPassword').value;
+      const imageFile = document.getElementById('regDoctorImage').files[0];
+      if (!name || !email || !phone || !specialty || !password) {
+        alert('Please fill required fields');
+        return;
+      }
+      let imageUrl = '';
+      if (imageFile) {
+        try {
+          imageUrl = await uploadDoctorImage(imageFile);
+        } catch (e) {
+          alert('Image upload failed: ' + e.message);
+          return;
+        }
+      }
+      try {
+        const { error } = await supabaseClient.from('doctors_registered').insert([{ 
+          name, email, phone, specialty, qualification, 
+          experience, hospital, fee, languages, password,
+          image: imageUrl
+        }]);
+        if (error) throw error;
+        alert('Registration successful! Please login.');
+        showLogin();
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    window.login = async function() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      if (!email || !password) {
+        alert('Please fill both fields');
+        return;
+      }
+      try {
+        let { data: patients } = await supabaseClient.from('patients').select('*').eq('email', email).eq('password', password);
+        if (patients && patients.length > 0) {
+          currentUser = patients[0];
+          userType = 'patient';
+        } else {
+          let { data: doctors } = await supabaseClient.from('doctors_registered').select('*').eq('email', email).eq('password', password);
+          if (doctors && doctors.length > 0) {
+            currentUser = doctors[0];
+            userType = 'doctor';
+          } else {
+            throw new Error('Invalid email or password');
+          }
+        }
+        localStorage.setItem('auscura_user', JSON.stringify(currentUser));
+        localStorage.setItem('auscura_userType', userType);
+        updateAuthBar();
+        closeAuthModal();
+        location.reload();
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    window.logout = function() {
+      currentUser = null;
+      userType = null;
+      clearSession();
+      updateAuthBar();
+      location.reload();
+    };
+
+    loadSession();
+    updateAuthBar();
+
+    document.getElementById('loginBtn').addEventListener('click', () => { openAuthModal(); showLogin(); });
+    document.getElementById('registerBtn').addEventListener('click', () => { openAuthModal(); showRegister(); });
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+  </script>
+
+  <!-- ===== NEUMORPHIC AUTH MODAL ===== -->
+  <div class="auth-modal" id="authModal">
+    <!-- Backdrop click closes modal -->
+    <div class="auth-modal-backdrop" onclick="closeAuthModal()"></div>
+
+    <div class="auth-window" id="authWindow">
+
+      <!-- ✕ Close button -->
+      <button class="nm-close-btn" onclick="closeAuthModal()"><i class="fas fa-times"></i></button>
+
+      <!-- ── SIGN IN PANEL (left, default) ── -->
+      <div class="nm-form-container nm-sign-in" id="nmSignInPanel">
+        <h2>Sign In</h2>
+        <p style="font-size:12px;color:var(--nm-text-secondary);margin:4px 0 12px;">Welcome back to Auscura</p>
+
+        <!-- Patient / Doctor tabs -->
+        <div class="nm-tabs" style="width:100%;">
+          <button class="nm-tab active" id="loginTabPatient" onclick="nmSwitchLoginTab('patient')">Patient</button>
+          <button class="nm-tab"        id="loginTabDoctor"  onclick="nmSwitchLoginTab('doctor')">Doctor</button>
+        </div>
+
+        <div class="nm-input-group">
+          <input type="email" id="loginEmail" placeholder="Email address">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="nm-input-group">
+          <input type="password" id="loginPassword" placeholder="Password">
+          <i class="fas fa-lock"></i>
+        </div>
+
+        <div id="authStatus" class="nm-status"></div>
+
+        <button class="nm-btn" onclick="login()">Sign In</button>
+
+        <p class="nm-footer-link">
+          <a href="#" onclick="nmShowPanel('register')">Don't have an account? Register</a>
+        </p>
+        <div class="nm-mobile-toggle" onclick="nmShowPanel('register')">Don't have an account? Register</div>
+      </div>
+
+      <!-- ── SIGN UP PANEL (right, hidden by default) ── -->
+      <div class="nm-form-container nm-sign-up" id="nmSignUpPanel">
+        <h2>Create Account</h2>
+        <p style="font-size:12px;color:var(--nm-text-secondary);margin:4px 0 12px;">Join Auscura today</p>
+
+        <!-- Patient / Doctor tabs -->
+        <div class="nm-tabs" style="width:100%;">
+          <button class="nm-tab active" id="regTabPatient" onclick="nmSwitchRegTab('patient')">Patient</button>
+          <button class="nm-tab"        id="regTabDoctor"  onclick="nmSwitchRegTab('doctor')">Doctor</button>
+        </div>
+
+        <!-- ── Patient Register Form ── -->
+        <div class="nm-scroll-area" id="nmRegPatientArea">
+          <div id="registerPatientForm">
+            <div class="nm-input-group">
+              <input type="text" id="regPatientName" placeholder="Full Name">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="email" id="regPatientEmail" placeholder="Email">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="tel" id="regPatientPhone" placeholder="Phone number">
+              <i class="fas fa-phone"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="password" id="regPatientPassword" placeholder="Create password">
+              <i class="fas fa-lock"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Doctor Register Form ── -->
+        <div class="nm-scroll-area" id="nmRegDoctorArea" style="display:none;">
+          <div id="registerDoctorForm">
+            <div class="nm-input-group">
+              <input type="text" id="regDoctorName" placeholder="Full Name (Dr. …)">
+              <i class="fas fa-user-md"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="email" id="regDoctorEmail" placeholder="Email">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="tel" id="regDoctorPhone" placeholder="Phone  (+91…)">
+              <i class="fas fa-phone"></i>
+            </div>
+            <div class="nm-input-group">
+              <select id="regDoctorSpecialty">
+                <option value="" disabled selected>Select Specialty</option>
+                <option value="Pulmonologist">Pulmonologist</option>
+                <option value="Respiratory Specialist">Respiratory Specialist</option>
+                <option value="Critical Care Specialist">Critical Care Specialist</option>
+                <option value="Pediatric Pulmonologist">Pediatric Pulmonologist</option>
+              </select>
+              <i class="fas fa-stethoscope" style="top:50%;"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="text" id="regDoctorQualification" placeholder="Qualifications (MD, DNB…)">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="number" id="regDoctorExperience" placeholder="Experience (years)">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="text" id="regDoctorHospital" placeholder="Hospital / Clinic">
+              <i class="fas fa-hospital"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="text" id="regDoctorFee" placeholder="Consultation Fee (₹)">
+              <i class="fas fa-rupee-sign"></i>
+            </div>
+            <div class="nm-input-group">
+              <input type="text" id="regDoctorLanguages" placeholder="Languages (English, Hindi…)">
+              <i class="fas fa-language"></i>
+            </div>
+            <div class="nm-input-group" style="padding-left:0;">
+              <label style="font-size:11px;color:var(--nm-text-secondary);margin-left:14px;display:block;margin-bottom:4px;">Profile Photo (optional)</label>
+              <input type="file" id="regDoctorImage" accept="image/*"
+                style="padding-left:14px;border-radius:20px;box-shadow:inset 5px 5px 9px var(--nm-shadow-dark),inset -5px -5px 9px var(--nm-shadow-light);">
+            </div>
+            <div class="nm-input-group">
+              <input type="password" id="regDoctorPassword" placeholder="Create password">
+              <i class="fas fa-lock"></i>
+            </div>
+          </div>
+        </div>
+
+        <div id="authStatusReg" class="nm-status"></div>
+
+        <button class="nm-btn" id="nmRegBtn" onclick="nmRegister()">Create Account</button>
+
+        <p class="nm-footer-link">
+          <a href="#" onclick="nmShowPanel('login')">Already have an account? Sign In</a>
+        </p>
+        <div class="nm-mobile-toggle" onclick="nmShowPanel('login')">Already have an account? Sign In</div>
+      </div>
+
+      <!-- ── SLIDING OVERLAY ── -->
+      <div class="nm-overlay-container">
+        <div class="nm-overlay">
+          <!-- shown when Sign-In is active → prompt to Sign Up -->
+          <div class="nm-overlay-panel nm-overlay-left">
+            <h2>Hello, Friend!</h2>
+            <p>Register with your personal details to start your Auscura journey</p>
+            <button class="nm-btn ghost" onclick="nmShowPanel('register')">Sign Up</button>
+          </div>
+          <!-- shown when Sign-Up is active → prompt to Sign In -->
+          <div class="nm-overlay-panel nm-overlay-right">
+            <h2>Welcome Back!</h2>
+            <p>Sign in to access your Auscura dashboard and health records</p>
+            <button class="nm-btn ghost" onclick="nmShowPanel('login')">Sign In</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.auth-window -->
+  </div><!-- /.auth-modal -->
+
+  <script>
+    /* ── Neumorphic modal helpers ── */
+    let _nmCurrentRegTab = 'patient';
+    let _nmCurrentLoginTab = 'patient';
+
+    function nmShowPanel(panel) {
+      const win = document.getElementById('authWindow');
+      if (panel === 'register') {
+        win.classList.add('right-panel-active');
+        currentAuthType = _nmCurrentRegTab;
+      } else {
+        win.classList.remove('right-panel-active');
+        currentAuthType = _nmCurrentLoginTab;
+      }
+    }
+
+    function nmSwitchLoginTab(type) {
+      _nmCurrentLoginTab = type;
+      currentAuthType = type;
+      document.getElementById('loginTabPatient').classList.toggle('active', type === 'patient');
+      document.getElementById('loginTabDoctor').classList.toggle('active', type === 'doctor');
+    }
+
+    function nmSwitchRegTab(type) {
+      _nmCurrentRegTab = type;
+      currentAuthType = type;
+      document.getElementById('regTabPatient').classList.toggle('active', type === 'patient');
+      document.getElementById('regTabDoctor').classList.toggle('active', type === 'doctor');
+      document.getElementById('nmRegPatientArea').style.display = type === 'patient' ? 'block' : 'none';
+      document.getElementById('nmRegDoctorArea').style.display  = type === 'doctor'  ? 'block' : 'none';
+      document.getElementById('nmRegBtn').textContent = type === 'patient' ? 'Create Account' : 'Register as Doctor';
+    }
+
+    function nmRegister() {
+      if (_nmCurrentRegTab === 'patient') registerPatient();
+      else registerDoctor();
+    }
+
+    function nmSetStatus(id, msg, type) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.className = 'nm-status ' + (type || '');
+    }
+
+    /* Override showLogin / showRegister to drive neumorphic panels */
+    const _origShowLogin    = window.showLogin;
+    const _origShowRegister = window.showRegister;
+    window.showLogin    = function() { nmShowPanel('login');    if (_origShowLogin)    _origShowLogin(); };
+    window.showRegister = function() { nmShowPanel('register'); if (_origShowRegister) _origShowRegister(); };
+  </script>
+</body>
+</html>
