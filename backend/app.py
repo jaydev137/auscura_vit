@@ -49,6 +49,8 @@ STAGE2_MAPPING = {
 }
 
 def load_models():
+    print("RF exists:", os.path.exists(RF_MODEL_PATH))
+    print("XGB exists:", os.path.exists(XGB_MODEL_PATH))
     """Load both stage models"""
     global rf_model, xg_model, rf_scaler, xg_scaler
     
