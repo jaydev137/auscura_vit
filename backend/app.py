@@ -182,6 +182,9 @@ def health_check():
 #newcode
 @app.route('/api/predict-multiple', methods=['POST', 'OPTIONS'])
 def predict_multiple():
+    
+    print("FILES:", request.files) #new
+
     try:
         print("🔥 API HIT")
 
