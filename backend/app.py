@@ -91,6 +91,7 @@ def load_models():
         print(f"⚠️ Stage 2 model error: {e}")
     
     print("=" * 60)
+    load_models()
 
 def generate_waveform_plot(audio, sr):
     """Generate waveform plot as base64 image"""
