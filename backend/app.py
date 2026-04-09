@@ -22,9 +22,9 @@ except:
 app = Flask(__name__)
 CORS(app)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Model paths
-RF_MODEL_PATH = os.path.join(BASE_DIR, '..', 'models', 'copd_rf_optimized_bundle.joblib')
-XGB_MODEL_PATH = os.path.join(BASE_DIR, '..', 'models', 'respiratory_xgb_optimized.joblib')
+
+RF_MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, '../models/copd_rf_optimized_bundle.joblib'))
+XGB_MODEL_PATH = os.path.abspath(os.path.join(BASE_DIR, '../models/respiratory_xgb_optimized.joblib'))
 
 print("RF PATH:", RF_MODEL_PATH)
 print("XGB PATH:", XGB_MODEL_PATH)
