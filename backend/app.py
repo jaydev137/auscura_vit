@@ -179,51 +179,8 @@ def health_check():
         }
     })
 
-#newcode
+
 @app.route('/api/predict-multiple', methods=['POST', 'OPTIONS'])
-def predict_multiple():
-    
-    print("FILES:", request.files) #new
-
-    try:
-        print("🔥 API HIT")
-
-        print("FILES RECEIVED:", request.files)
-        print("FORM DATA:", request.form)
-
-        files = []
-        for key in request.files:
-            print("KEY:", key)
-            files.append(request.files[key])
-
-        if not files:
-            return {"error": "No files"}, 400
-
-        file = files[0]
-
-        temp_path = "test.wav"
-        file.save(temp_path)
-
-        print("✅ File saved")
-
-        import librosa
-        audio, sr = librosa.load(temp_path, sr=16000)
-
-        print("✅ Audio loaded")
-
-        import audio_processor as ap
-        features = ap.extract_features_from_file(temp_path)
-
-        print("✅ Features extracted:", features)
-
-        return {"success": True}
-
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return {"error": str(e)}, 500
-
-"""@app.route('/api/predict-multiple', methods=['POST', 'OPTIONS'])
 def predict_multiple():
     if request.method == 'OPTIONS':
         return jsonify({"success": True}), 200
@@ -456,7 +413,7 @@ def predict_multiple():
     
     except Exception as e:
         print("🔥 ERROR IN API:", str(e))
-        return {"error": str(e)}, 500"""
+        return {"error": str(e)}, 500
 
 if __name__ == '__main__':
     load_models()
