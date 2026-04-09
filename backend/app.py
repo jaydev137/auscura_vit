@@ -12,7 +12,10 @@ import base64
 import warnings
 warnings.filterwarnings('ignore')
 
-import audio_processor as ap
+try:
+    import audio_processor as ap
+except:
+    from backend import audio_processor as ap
 
 
 
@@ -408,5 +411,5 @@ if __name__ == '__main__':
     print("   - Audio information (duration, sample rate, file size)")
     print("   - Probability breakdown for Stage 2")
     print("=" * 60)
-    
+
     app.run(host='0.0.0.0', port=5000, debug=True)
