@@ -402,10 +402,8 @@ def predict_multiple():
         return jsonify(response)
     
     except Exception as e:
-        print(f"❌ Error: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({"error": str(e)}), 500
+        print("🔥 ERROR IN API:", str(e))
+        return {"error": str(e)}, 500
 
 if __name__ == '__main__':
     load_models()
