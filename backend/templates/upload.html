@@ -1030,7 +1030,7 @@
         // Add user type to form data
         formData.append('user_type', userType || 'patient');
         
-        const BACKEND_URL = 'http://localhost:5000';
+        const BACKEND_URL = '';
         console.log('Sending request to backend with user_type:', userType);
         
         const response = await fetch(`${BACKEND_URL}/api/predict-multiple`, {
