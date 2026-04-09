@@ -959,6 +959,7 @@
 
     // Point marker click handlers
     document.addEventListener('DOMContentLoaded', function() {
+      initializeUploadAreas();
       document.querySelectorAll('.point-marker').forEach(marker => {
         marker.addEventListener('click', function() {
           const pointNum = this.dataset.location;

@@ -1,5 +1,4 @@
-from flask import Flask, render_template
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import librosa
 import numpy as np
@@ -147,6 +146,10 @@ def generate_mfcc_plot(audio, sr):
     buf.seek(0)
     plt.close()
     return base64.b64encode(buf.getvalue()).decode('utf-8')
+
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -406,8 +409,4 @@ if __name__ == '__main__':
     print("   - Probability breakdown for Stage 2")
     print("=" * 60)
     
-@app.route('/')
-def home():
-    return render_template('index.html')
-
     app.run(host='0.0.0.0', port=5000, debug=True)
