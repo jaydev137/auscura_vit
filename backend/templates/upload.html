@@ -406,14 +406,19 @@
       cursor: not-allowed;
     }
 
-    /* Results Panel */
-    .results-panel {
+    /* Results Panel - Full Width Horizontal */
+    .results-panel-full {
       background: var(--clay-light);
       border-radius: 28px;
       box-shadow: var(--clay-shadow-out);
-      padding: 1.5rem;
+      padding: 2rem;
       display: none;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
+      width: 100%;
+    }
+    .results-panel-full h4 {
+      font-family: 'Righteous', cursive;
+      margin-bottom: 1.5rem;
     }
 
     /* Visualization Styles */
@@ -586,8 +591,6 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-
-
     /* Floating elements */
     .floating-elements {
       position: fixed;
@@ -652,9 +655,9 @@
           <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="/#about">About</a></li>
           <li class="nav-item"><a class="nav-link" href="/#diseases">Diseases</a></li>
-          <li class="nav-item"><a class="nav-link" href="/upload">Analyze</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/upload">Analyze</a></li>
           <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/doctors">Consult a Doctor</a></li>
+          <li class="nav-item"><a class="nav-link" href="/doctors">Consult a Doctor</a></li>
         </ul>
       </div>
     </div>
@@ -682,8 +685,9 @@
         </div>
       </div>
 
+      <!-- Two Column Layout for Body Model and Audio Capture -->
       <div class="row g-4">
-        <!-- Body Scanner with Interactive Images -->
+        <!-- Left Column: Body Scanner with Interactive Images -->
         <div class="col-lg-6">
           <div class="scanner-container">
             <div class="view-nav">
@@ -702,7 +706,7 @@
               <!-- ANTERIOR VIEW -->
               <div id="view-anterior" class="view-container active">
                 <div class="image-container">
-                  <img src="{{ url_for('static', filename='images/anterior-view.png') }}" alt="Anterior Lung Auscultation Points" class="medical-image">
+                  <img src="static/images/anterior-view.png" alt="Anterior Lung Auscultation Points" class="medical-image">
                   <div class="points-overlay">
                     <div class="point-marker" data-location="1" data-view="anterior" style="top: 46%; left: 43%;">1</div>
                     <div class="point-marker" data-location="2" data-view="anterior" style="top: 56%; left: 37%;">2</div>
@@ -716,7 +720,7 @@
               <!-- LATERAL VIEW -->
               <div id="view-lateral" class="view-container">
                 <div class="image-container">
-                  <img src="{{ url_for('static', filename='images/lateral-view.png') }}" alt="Lateral Lung Auscultation Points" class="medical-image">
+                  <img src="static/images/lateral-view.png" alt="Lateral Lung Auscultation Points" class="medical-image">
                   <div class="points-overlay">
                     <div class="point-marker" data-location="6" data-view="lateral" style="top: 48%; left: 46%;">6</div>
                     <div class="point-marker" data-location="7" data-view="lateral" style="top: 66%; left: 59%;">7</div>
@@ -727,7 +731,7 @@
               <!-- POSTERIOR VIEW -->
               <div id="view-posterior" class="view-container">
                 <div class="image-container">
-                  <img src="{{ url_for('static', filename='images/posterior-view.png') }}" alt="Posterior Lung Auscultation Points" class="medical-image">
+                  <img src="static/images/posterior-view.png" alt="Posterior Lung Auscultation Points" class="medical-image">
                   <div class="points-overlay">
                     <div class="point-marker" data-location="8" data-view="posterior" style="top: 47%; left: 44%;">8</div>
                     <div class="point-marker" data-location="9" data-view="posterior" style="top: 47%; left: 59%;">9</div>
@@ -748,7 +752,7 @@
           </div>
         </div>
 
-        <!-- Upload Interface -->
+        <!-- Right Column: Upload Interface -->
         <div class="col-lg-6">
           <div class="scanner-container">
             <h4 class="text-center mb-4" style="color: var(--primary); font-weight: 700;">
@@ -778,9 +782,14 @@
               </button>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div id="resultsPanel" class="results-panel">
-            <h4 class="text-center mb-4" style="color: var(--primary); font-weight: 700;">
+      <!-- Full Width Results Panel (moved outside the two-column layout) -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div id="resultsPanel" class="results-panel-full">
+            <h4 class="text-center" style="color: var(--primary); font-weight: 700;">
               <i class="fas fa-chart-line me-2"></i>SCAN RESULTS
             </h4>
             <div id="resultContent" class="text-center"></div>
@@ -809,8 +818,6 @@
       </div>
     </div>
   </footer>
-
-
 
   <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -1036,7 +1043,6 @@
         const response = await fetch(`${BACKEND_URL}/api/predict-multiple`, {
           method: 'POST',
           body: formData
-          // Don't set Content-Type header - let browser set it with boundary
         });
         
         if (!response.ok) {
@@ -1057,20 +1063,22 @@
           const icon = getIcon(finalDiagnosis);
           
           let resultHtml = `
-            <div class="mb-4">
+            <div class="text-center mb-4">
               <i class="fas ${icon} fa-3x mb-3" style="color: ${color};"></i>
             </div>
-            <h3 style="color: ${color}; font-weight: 700;">${finalDiagnosis}</h3>
-            <div class="scanner-progress mb-4">
-              <div class="scanner-progress-bar" style="width: ${confidence}%">${confidence}% CONFIDENCE</div>
-            </div>
-            <div style="background: rgba(44,90,160,0.08); padding: 1rem; border-radius: 15px;">
-              <p class="mb-2"><strong>Scan Complete:</strong> ${data.points_analyzed} point${data.points_analyzed > 1 ? 's' : ''} processed</p>
-              <p class="mb-0"><i class="fas fa-check-circle me-2" style="color: var(--accent);"></i>Respiratory assessment complete</p>
-            </div>
-            <div class="mt-3" style="padding: 10px; background: rgba(44,90,160,0.05); border-radius: 15px;">
-              <i class="fas fa-info-circle me-2" style="color: var(--accent);"></i>
-              <strong>Recommendation:</strong> ${recommendation}
+            <div class="text-center">
+              <h3 style="color: ${color}; font-weight: 700;">${finalDiagnosis}</h3>
+              <div class="scanner-progress mb-4" style="max-width: 400px; margin: 0 auto;">
+                <div class="scanner-progress-bar" style="width: ${confidence}%">${confidence}% CONFIDENCE</div>
+              </div>
+              <div style="background: rgba(44,90,160,0.08); padding: 1rem; border-radius: 15px; max-width: 500px; margin: 0 auto;">
+                <p class="mb-2"><strong>Scan Complete:</strong> ${data.points_analyzed} point${data.points_analyzed > 1 ? 's' : ''} processed</p>
+                <p class="mb-0"><i class="fas fa-check-circle me-2" style="color: var(--accent);"></i>Respiratory assessment complete</p>
+              </div>
+              <div class="mt-3" style="padding: 10px; background: rgba(44,90,160,0.05); border-radius: 15px; max-width: 500px; margin: 0 auto;">
+                <i class="fas fa-info-circle me-2" style="color: var(--accent);"></i>
+                <strong>Recommendation:</strong> ${recommendation}
+              </div>
             </div>
           `;
           
@@ -1200,9 +1208,26 @@
       return icons[diagnosis] || 'fa-stethoscope';
     }
 
-
+    // Add floating particles
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'bg-particle';
+      particle.style.width = (Math.random() * 6 + 2) + 'px';
+      particle.style.height = (Math.random() * 6 + 2) + 'px';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 20 + 's';
+      particle.style.animationDuration = (Math.random() * 15 + 8) + 's';
+      document.body.appendChild(particle);
+    }
+    
+    // Random animation delays for floating elements
+    document.querySelectorAll('.floating-element').forEach(element => { 
+      element.style.animationDelay = Math.random() * 20 + 's'; 
+    });
+  </script>
 
   <!-- AUTH SCRIPT -->
+  <script>
     const SUPABASE_URL = 'https://xywyheflpidhpbhxpyqm.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5d3loZWZscGlkaHBiaHhweXFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMjcwNTAsImV4cCI6MjA4ODkwMzA1MH0.nvJAIvfFT_OdSljfTstukeIHp6ivEkhoC-veOuQDPVk';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
